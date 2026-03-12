@@ -1,10 +1,10 @@
-package br.furb.trabalho01;
+package br.furb.problema01;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class Trabalho01ApplicationTests {
+class Problema01ApplicationTests {
 
 	@Test
 	void contextLoads() {

@@ -1,13 +1,13 @@
-package br.furb.trabalho01;
+package br.furb.problema01;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class Trabalho01Application {
+public class Problema01Application {
 
 	public static void main(String[] args) {
-		SpringApplication.run(Trabalho01Application.class, args);
+		SpringApplication.run(Problema01Application.class, args);
 	}
 
 }
