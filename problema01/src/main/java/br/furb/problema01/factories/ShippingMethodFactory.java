@@ -1,9 +1,10 @@
 package br.furb.problema01.factories;
 
 import br.furb.problema01.enums.ShippingMethodType;
+import br.furb.problema01.interfaces.IShippingMethod;
 
 public class ShippingMethodFactory {
-    public static void createShippingMethod(ShippingMethodType shippingMethod) {
+    public static IShippingMethod createShippingMethod(ShippingMethodType shippingMethod) throws Exception {
         switch (shippingMethod) {
             case PAC:
                 break;
@@ -11,8 +12,8 @@ public class ShippingMethodFactory {
                 break;
             case PICKUP:
                 break;
-            default:
-                break;
         }
+
+        throw new Exception("Tipo de entrega inválido");
     }
 }
