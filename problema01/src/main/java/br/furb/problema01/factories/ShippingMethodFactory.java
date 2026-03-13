@@ -3,7 +3,7 @@ package br.furb.problema01.factories;
 import br.furb.problema01.enums.ShippingMethodType;
 
 public class ShippingMethodFactory {
-    public static void criaFormatoEntrega(ShippingMethodType shippingMethod) {
+    public static void createShippingMethod(ShippingMethodType shippingMethod) {
         switch (shippingMethod) {
             case PAC:
                 break;
