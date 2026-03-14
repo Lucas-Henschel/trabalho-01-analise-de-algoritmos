@@ -1,6 +1,4 @@
-package br.furb.problema01.factories;
-
-import br.furb.problema01.interfaces.IShippingMethod;
+package br.furb.problema01.shipping;
 
 public class ShippingMethodPac implements IShippingMethod {
     private static final int LIMIT_1000G = 1000;

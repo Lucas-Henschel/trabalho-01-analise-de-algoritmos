@@ -1,6 +1,4 @@
-package br.furb.problema01.factories;
-
-import br.furb.problema01.interfaces.IShippingMethod;
+package br.furb.problema01.shipping;
 
 public class ShippingMethodSedex implements IShippingMethod {
 	private static final int LIMIT_500G = 500;

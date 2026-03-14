@@ -7,10 +7,10 @@ import static org.junit.jupiter.api.Assertions.*;
 public class OrderTest {
     @Test
     void shouldThrowExceptionWhenProductListIsEmpty() {
-        OrderModel order = new OrderModel(ShippingMethodTypeEnum.PAC);
+        Order order = new Order(ShippingMethodTypeEnum.PAC);
 
         Exception exception = assertThrows(Exception.class, () -> {
-            order.getShippingCost();
+            order.calculateShippingCost();
         });
 
         assertEquals("Lista de produtos está vazia", exception.getMessage());
