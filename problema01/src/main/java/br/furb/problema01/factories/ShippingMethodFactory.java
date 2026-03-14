@@ -4,7 +4,7 @@ import br.furb.problema01.enums.ShippingMethodType;
 import br.furb.problema01.interfaces.IShippingMethod;
 
 public class ShippingMethodFactory {
-    public static IShippingMethod createShippingMethod(ShippingMethodType shippingMethod) throws Exception {
+    public static IShippingMethod createShippingMethod(ShippingMethodType shippingMethod) throws IllegalArgumentException {
         switch (shippingMethod) {
             case PAC:
                 break;
@@ -14,6 +14,6 @@ public class ShippingMethodFactory {
                 break;
         }
 
-        throw new Exception("Tipo de entrega inválido");
+        throw new IllegalArgumentException("Tipo de entrega inválido");
     }
 }
