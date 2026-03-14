@@ -1,10 +1,10 @@
-package br.furb.problema01.model;
+package br.furb.problema01.factories;
 
 import br.furb.problema01.interfaces.IShippingMethod;
 
 public class ShippingMethodPickup implements IShippingMethod {
     @Override
-    public double shippingCalculator(int weight) {
+    public double shippingCalculator(int weightInGrams) {
         return 0;
     }
 }

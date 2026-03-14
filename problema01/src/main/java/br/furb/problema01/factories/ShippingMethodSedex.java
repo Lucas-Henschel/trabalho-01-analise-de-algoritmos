@@ -1,4 +1,4 @@
-package br.furb.problema01.model;
+package br.furb.problema01.factories;
 
 import br.furb.problema01.interfaces.IShippingMethod;
 
@@ -13,15 +13,13 @@ public class ShippingMethodSedex implements IShippingMethod {
     private static final double PRICE_PER_100G = 1.5;
     
 	@Override
-	public double shippingCalculator(int weight) {
-		if(weight < LIMIT_500G) {
+	public double shippingCalculator(int weightInGrams) {
+		if (weightInGrams < LIMIT_500G) {
 			return PRICE_UNDER_500;
-		}
-		
-		else if (weight < LIMIT_1000G) {
+		} else if (weightInGrams < LIMIT_1000G) {
 			return PRICE_UNDER_1000;
 		}
 		
-		return BASE_PRICE + (PRICE_PER_100G * (weight / 100));
+		return BASE_PRICE + (PRICE_PER_100G * (weightInGrams / 100));
 	};
 }
