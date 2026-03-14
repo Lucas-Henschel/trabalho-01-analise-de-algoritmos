@@ -5,12 +5,12 @@ import java.math.BigDecimal;
 public class Product {
     private String name;
     private BigDecimal price;
-    private int weight;
+    private Weight weight;
 
     public Product(String name, BigDecimal price, int weight) {
         this.name = name;
         this.price = price;
-        this.weight = weight;
+        this.weight = new Weight(weight);
     }
 
     public String getName() {
@@ -21,7 +21,7 @@ public class Product {
         return price;
     }
 
-    public int getWeight() {
+    public Weight getWeight() {
         return weight;
     }
 }
