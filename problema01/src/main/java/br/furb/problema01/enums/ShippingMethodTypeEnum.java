@@ -1,6 +1,6 @@
 package br.furb.problema01.enums;
 
-public enum ShippingMethodType {
+public enum ShippingMethodTypeEnum {
     PAC,
     SEDEX,
     PICKUP

@@ -1,13 +1,13 @@
 package br.furb.problema01.model;
 
-import br.furb.problema01.enums.ShippingMethodType;
+import br.furb.problema01.enums.ShippingMethodTypeEnum;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class OrderTest {
     @Test
     void shouldThrowExceptionWhenProductListIsEmpty() {
-        Order order = new Order(ShippingMethodType.PAC);
+        OrderModel order = new OrderModel(ShippingMethodTypeEnum.PAC);
 
         Exception exception = assertThrows(Exception.class, () -> {
             order.getShippingCost();
