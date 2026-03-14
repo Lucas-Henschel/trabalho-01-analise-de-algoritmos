@@ -21,10 +21,6 @@ public class Order {
     }
 
     public void addProduct(Product product) {
-        if (product == null) {
-            throw new IllegalArgumentException("Produto inválido");
-        }
-
         products.add(product);
     }
 }

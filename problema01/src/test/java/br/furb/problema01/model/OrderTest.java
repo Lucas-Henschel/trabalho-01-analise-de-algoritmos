@@ -9,9 +9,10 @@ public class OrderTest {
     void shouldThrowExceptionWhenProductListIsEmpty() {
         Order order = new Order(ShippingMethodTypeEnum.PAC);
 
-        Exception exception = assertThrows(Exception.class, () -> {
-            order.calculateShippingCost();
-        });
+        IllegalStateException exception = assertThrows(
+            IllegalStateException.class,
+            order::calculateShippingCost
+        );
 
         assertEquals("Lista de produtos está vazia", exception.getMessage());
     }
