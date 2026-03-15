@@ -25,5 +25,4 @@ class ShippingMethodPickupTest {
         assertEquals(0, shippingMethodPickup.shippingCalculator(900000));
     }
 
-
 }
