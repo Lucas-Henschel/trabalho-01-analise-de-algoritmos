@@ -12,12 +12,14 @@ public class ShippingMethodSedex implements IShippingMethod {
     
 	@Override
 	public double shippingCalculator(int weightInGrams) {
+		// TODO: analisar os ifs
 		if (weightInGrams < LIMIT_500G) {
 			return PRICE_UNDER_500;
 		} else if (weightInGrams < LIMIT_1000G) {
 			return PRICE_UNDER_1000;
 		}
-		
+
+		// TODO: ver a questao do double quando divide por 100
 		return BASE_PRICE + (PRICE_PER_100G * (weightInGrams / 100));
 	};
 }

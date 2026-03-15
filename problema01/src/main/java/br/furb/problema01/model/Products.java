@@ -19,6 +19,7 @@ public class Products {
     }
 
     public int totalWeight() {
+        // TOOD: mudar o product.getWeight().inGrams() para um metodo
         return products.stream()
             .mapToInt(product -> product.getWeight().inGrams())
             .sum();

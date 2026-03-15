@@ -9,6 +9,7 @@ public class ShippingMethodPac implements IShippingMethod {
 
     @Override
     public double shippingCalculator(int weightInGrams) {
+        // TODO: analisar os ifs
         if (weightInGrams <= LIMIT_1000G) {
             return PRICE_UNDER_1000G;
         } else if (weightInGrams <= LIMIT_2000G) {
