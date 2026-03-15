@@ -24,5 +24,4 @@ class ShippingMethodPickupTest {
     void shouldReturnZeroShippingCostForPickupWhenWeightIsVeryLarge() {
         assertEquals(0, shippingMethodPickup.shippingCalculator(900000));
     }
-
 }

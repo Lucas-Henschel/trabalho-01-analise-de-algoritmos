@@ -34,8 +34,8 @@ public class ShippingMethodPacTest {
     @Test
     void shouldThrowExceptionWhenWeightIsAbove2000g() {
         IllegalArgumentException exception = assertThrows(
-                IllegalArgumentException.class,
-                () -> shippingMethodPac.shippingCalculator(2500)
+            IllegalArgumentException.class,
+            () -> shippingMethodPac.shippingCalculator(2500)
         );
 
         assertEquals("Não é permitido o envio de pedidos acima de 2kg", exception.getMessage());
@@ -44,8 +44,8 @@ public class ShippingMethodPacTest {
     @Test
     void shouldThrowExceptionWhenWeightIsFarAboveLimit() {
         IllegalArgumentException exception = assertThrows(
-                IllegalArgumentException.class,
-                () -> shippingMethodPac.shippingCalculator(5000)
+            IllegalArgumentException.class,
+            () -> shippingMethodPac.shippingCalculator(5000)
         );
 
         assertEquals("Não é permitido o envio de pedidos acima de 2kg", exception.getMessage());
