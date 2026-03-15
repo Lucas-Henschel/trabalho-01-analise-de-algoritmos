@@ -4,9 +4,9 @@ import java.math.BigDecimal;
 
 public class Product {
     private String name;
-    // TODO: criar uma outra class para as informacoes gerais
+    // TODO: criar uma outra class para as informacoes gerais (vou fazer depois da praia, aguarde uns momentos Lucas)
     private BigDecimal price;
-    // TODO: alterar o nome do weight para weightInGrams
+    // TODO: alterar o nome do weight para weightInGrams (mesma coisa que falei la em cima, pf não faça voce)
     private Weight weight;
 
     public Product(String name, BigDecimal price, int weight) {
@@ -23,7 +23,7 @@ public class Product {
         return price;
     }
 
-    public Weight getWeight() {
-        return weight;
+    public int getWeightInGrams() {
+        return weight.inGrams();
     }
 }

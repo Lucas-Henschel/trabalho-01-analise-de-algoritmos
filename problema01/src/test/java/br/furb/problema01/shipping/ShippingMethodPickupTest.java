@@ -12,16 +12,16 @@ class ShippingMethodPickupTest {
 
     @Test
     void shouldReturnZeroShippingCostForPickupWhenWeightIsLarge() {
-        assertEquals(0, shippingMethodPickup.shippingCalculator(5000));
+        assertEquals(0, shippingMethodPickup.calculateShippingCost(5000));
     }
 
     @Test
     void shouldReturnZeroShippingCostForPickupWhenWeightIsSmall() {
-        assertEquals(0, shippingMethodPickup.shippingCalculator(50));
+        assertEquals(0, shippingMethodPickup.calculateShippingCost(50));
     }
 
     @Test
     void shouldReturnZeroShippingCostForPickupWhenWeightIsVeryLarge() {
-        assertEquals(0, shippingMethodPickup.shippingCalculator(900000));
+        assertEquals(0, shippingMethodPickup.calculateShippingCost(900000));
     }
 }

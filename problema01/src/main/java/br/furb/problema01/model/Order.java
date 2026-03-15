@@ -17,10 +17,14 @@ public class Order {
             throw new IllegalStateException("Lista de produtos está vazia");
         }
 
-        return shippingMethod.shippingCalculator(products.totalWeight());
+        return shippingMethod.calculateShippingCost(getProductsTotalWeight());
     }
 
     public void addProduct(Product product) {
         products.add(product);
+    }
+
+    private int getProductsTotalWeight() {
+        return products.totalWeightInGrams();
     }
 }

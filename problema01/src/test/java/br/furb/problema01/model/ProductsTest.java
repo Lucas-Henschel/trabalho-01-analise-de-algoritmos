@@ -41,7 +41,7 @@ public class ProductsTest {
         Products products = new Products();
         products.add(new Product("Livro", new BigDecimal("10.0"), 500));
 
-        int totalWeight = products.totalWeight();
+        int totalWeight = products.totalWeightInGrams();
         assertEquals(500, totalWeight);
     }
 
@@ -51,7 +51,7 @@ public class ProductsTest {
         products.add(new Product("Livro", new BigDecimal("10.0"), 400));
         products.add(new Product("Caderno", new BigDecimal("20.0"), 600));
 
-        int totalWeight = products.totalWeight();
+        int totalWeight = products.totalWeightInGrams();
         assertEquals(1000, totalWeight);
     }
 }
