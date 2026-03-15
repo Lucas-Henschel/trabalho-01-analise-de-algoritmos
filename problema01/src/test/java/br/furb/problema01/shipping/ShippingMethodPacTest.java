@@ -13,29 +13,29 @@ public class ShippingMethodPacTest {
 
     @Test
     void shouldReturnPriceUnder1000g() {
-        assertEquals(10.0, shippingMethodPac.shippingCalculator(600));
+        assertEquals(10.0, shippingMethodPac.calculateShippingCost(600));
     }
 
     @Test
     void shouldReturnPriceBetween1000gAnd2000g() {
-        assertEquals(15.0, shippingMethodPac.shippingCalculator(1800));
+        assertEquals(15.0, shippingMethodPac.calculateShippingCost(1800));
     }
 
     @Test
     void shouldReturnPriceWhenWeightIsExactly1000g() {
-        assertEquals(10.0, shippingMethodPac.shippingCalculator(1000));
+        assertEquals(10.0, shippingMethodPac.calculateShippingCost(1000));
     }
 
     @Test
     void shouldReturnPriceWhenWeightIsExactly2000g() {
-        assertEquals(15.0, shippingMethodPac.shippingCalculator(2000));
+        assertEquals(15.0, shippingMethodPac.calculateShippingCost(2000));
     }
 
     @Test
     void shouldThrowExceptionWhenWeightIsAbove2000g() {
         IllegalArgumentException exception = assertThrows(
             IllegalArgumentException.class,
-            () -> shippingMethodPac.shippingCalculator(2500)
+            () -> shippingMethodPac.calculateShippingCost(2500)
         );
 
         assertEquals("Não é permitido o envio de pedidos acima de 2kg", exception.getMessage());
@@ -45,7 +45,7 @@ public class ShippingMethodPacTest {
     void shouldThrowExceptionWhenWeightIsFarAboveLimit() {
         IllegalArgumentException exception = assertThrows(
             IllegalArgumentException.class,
-            () -> shippingMethodPac.shippingCalculator(5000)
+            () -> shippingMethodPac.calculateShippingCost(5000)
         );
 
         assertEquals("Não é permitido o envio de pedidos acima de 2kg", exception.getMessage());

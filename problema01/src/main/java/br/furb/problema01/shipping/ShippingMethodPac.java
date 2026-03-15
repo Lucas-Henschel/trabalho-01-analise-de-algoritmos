@@ -8,13 +8,9 @@ public class ShippingMethodPac implements IShippingMethod {
     private static final double PRICE_1000G_TO_2000G = 15.0;
 
     @Override
-    public double shippingCalculator(int weightInGrams) {
-        // TODO: analisar os ifs
-        if (weightInGrams <= LIMIT_1000G) {
-            return PRICE_UNDER_1000G;
-        } else if (weightInGrams <= LIMIT_2000G) {
-            return PRICE_1000G_TO_2000G;
-        }
+    public double calculateShippingCost(int weightInGrams) {
+        if (weightInGrams <= LIMIT_1000G) return PRICE_UNDER_1000G;
+        if (weightInGrams <= LIMIT_2000G) return PRICE_1000G_TO_2000G;
 
         throw new IllegalArgumentException("Não é permitido o envio de pedidos acima de 2kg");
     }
