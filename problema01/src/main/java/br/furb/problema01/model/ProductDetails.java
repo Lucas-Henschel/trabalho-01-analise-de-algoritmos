@@ -5,11 +5,11 @@ import java.math.BigDecimal;
 public class ProductDetails {
 
     private BigDecimal price;
-    private Weight weight;
+    private Weight weightInGrams;
 
     public ProductDetails(BigDecimal price, int weightInGrams) {
         this.price = price;
-        this.weight = new Weight(weightInGrams);
+        this.weightInGrams = new Weight(weightInGrams);
     }
 
     public BigDecimal getPrice() {
@@ -17,6 +17,6 @@ public class ProductDetails {
     }
 
     public int getWeightInGrams() {
-        return weight.inGrams();
+        return weightInGrams.inGrams();
     }
 }
