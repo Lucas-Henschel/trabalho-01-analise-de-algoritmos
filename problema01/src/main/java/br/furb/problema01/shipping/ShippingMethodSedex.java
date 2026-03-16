@@ -15,7 +15,14 @@ public class ShippingMethodSedex implements IShippingMethod {
 		if (weightInGrams <= LIMIT_500G) return PRICE_UP_TO_500G;
 		if (weightInGrams <= LIMIT_1000G) return PRICE_501G_TO_1000G;
 
-		// TODO: ver a questao do double quando divide por 100
-		return BASE_PRICE + (PRICE_PER_100G * (weightInGrams / 100));
+		return BASE_PRICE + calculateAdditionalCostPer100g(weightInGrams);
 	};
+
+	private static double calculateAdditionalCostPer100g(int weightInGrams){
+        return (PRICE_PER_100G * (calculateWeightExceeding1000g(weightInGrams) / 100));
+    }
+ 
+    private static int calculateWeightExceeding1000g(int weightInGrams){
+        return weightInGrams - 1000;
+    }
 }
