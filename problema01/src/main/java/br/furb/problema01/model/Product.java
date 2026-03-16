@@ -4,15 +4,11 @@ import java.math.BigDecimal;
 
 public class Product {
     private String name;
-    // TODO: criar uma outra class para as informacoes gerais (vou fazer depois da praia, aguarde uns momentos Lucas)
-    private BigDecimal price;
-    // TODO: alterar o nome do weight para weightInGrams (mesma coisa que falei la em cima, pf não faça voce)
-    private Weight weight;
+    private ProductDetails productDetails;
 
-    public Product(String name, BigDecimal price, int weight) {
+    public Product(String name, BigDecimal price, int weightInGrams) {
         this.name = name;
-        this.price = price;
-        this.weight = new Weight(weight);
+        this.productDetails = new ProductDetails(price, weightInGrams);
     }
 
     public String getName() {
@@ -20,10 +16,10 @@ public class Product {
     }
 
     public BigDecimal getPrice() {
-        return price;
+        return productDetails.getPrice();
     }
 
     public int getWeightInGrams() {
-        return weight.inGrams();
+        return productDetails.getWeightInGrams();
     }
 }
