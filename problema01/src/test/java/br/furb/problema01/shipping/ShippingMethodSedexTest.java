@@ -54,10 +54,10 @@ public class ShippingMethodSedexTest {
     @Test
     void shouldReturnPriceAbove1000Grams() {
         Order order = new Order(ShippingMethodTypeEnum.SEDEX);
-        order.addProduct(new Product("Livro de direito", new BigDecimal("10.0"), 1200));
+        order.addProduct(new Product("Livro de direito", new BigDecimal("10.0"), 1150));
 
         double shippingCost = order.calculateShippingCost();
 
-        assertEquals(64.5, shippingCost);
+        assertEquals(48.0, shippingCost);
     }
 }
