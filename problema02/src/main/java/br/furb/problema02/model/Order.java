@@ -2,12 +2,14 @@ package br.furb.problema02.model;
 
 import br.furb.problema02.order.IOrderType;
 
-public abstract class Order implements IOrderType{
+import java.math.BigDecimal;
+
+public abstract class Order implements IOrderType {
 	//pode ser que isso altere, depende de como vai ficar a classe do investidor acho?
 	private final String investorNameString;
-	private final double orderValue;
+	private final BigDecimal orderValue;
 	
-	protected Order(String investorName, double orderValue) {
+	protected Order(String investorName, BigDecimal orderValue) {
 		this.investorNameString = investorName;
 		this.orderValue = orderValue;
 	}
@@ -16,7 +18,7 @@ public abstract class Order implements IOrderType{
 		return investorNameString;
 	}
 	
-	public double getOrderValue() {
+	public BigDecimal getOrderValue() {
 		return orderValue;
 	}
 	

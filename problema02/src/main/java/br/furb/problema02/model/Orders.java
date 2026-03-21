@@ -10,6 +10,7 @@ public class Orders {
         if (order == null) {
             throw new IllegalArgumentException("Ordem inválida");
         }
+
         orders.add(order);
     }
 
@@ -21,6 +22,7 @@ public class Orders {
         if (order == null) {
             throw new IllegalArgumentException("Ordem inválida");
         }
+
         orders.remove(order);
     }
 }
