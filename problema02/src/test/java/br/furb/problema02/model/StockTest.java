@@ -51,6 +51,8 @@ class StockTest {
 
         assertTrue(result.isPending());
         assertFalse(result.hasMatch());
+        assertFalse(result.getMatchedOrder().isPresent());
+        assertFalse(result.getNegotiatedValue().isPresent());
         assertTrue(stock.hasPendingOrders());
         assertEquals(1, stock.pendingOrdersCount());
     }
@@ -75,6 +77,9 @@ class StockTest {
         TradeResult result = investor.orderRegister(stock, MATCH_VALUE, OrderTypeEnum.BUY);
 
         assertTrue(result.isPending());
+        assertFalse(result.hasMatch());
+        assertFalse(result.getMatchedOrder().isPresent());
+        assertFalse(result.getNegotiatedValue().isPresent());
         assertTrue(stock.hasPendingOrders());
         assertEquals(1, stock.pendingOrdersCount());
         assertEquals(STOCK_VALUE, stock.getValue());
