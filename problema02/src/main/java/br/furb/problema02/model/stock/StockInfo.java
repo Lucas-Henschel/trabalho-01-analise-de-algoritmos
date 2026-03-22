@@ -3,7 +3,7 @@ package br.furb.problema02.model.stock;
 import java.math.BigDecimal;
 
 public class StockInfo {
-    private String name;
+    private final String name;
     private BigDecimal value;
 
     public StockInfo(String name, BigDecimal value) {
@@ -17,5 +17,9 @@ public class StockInfo {
 
     public BigDecimal getValue() {
         return value;
+    }
+
+    public void setValue(BigDecimal value) {
+        this.value = value;
     }
 }

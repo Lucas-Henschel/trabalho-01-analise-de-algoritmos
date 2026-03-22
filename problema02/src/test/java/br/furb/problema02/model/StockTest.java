@@ -19,6 +19,7 @@ class StockTest {
     private static final BigDecimal STOCK_VALUE = new BigDecimal("37.85");
     private static final String BUY_INVESTOR = "Marina Costa";
     private static final String SELL_INVESTOR = "Lucas Almeida";
+    private static final BigDecimal MATCH_VALUE = new BigDecimal("24.00");
 
     @Test
     void shouldInitializeStockWithProvidedNameValueAndEmptyOrders() {
@@ -33,7 +34,7 @@ class StockTest {
     void shouldAddBuyOrderToStock() {
         Stock stock = new Stock(STOCK_NAME, STOCK_VALUE);
 
-        stock.getOrders().add(OrderTypeFactory.CreateOrder(BUY_INVESTOR, new BigDecimal("1250.75"), OrderTypeEnum.BUY));
+        stock.getOrders().add(OrderTypeFactory.createOrder(BUY_INVESTOR, new BigDecimal("1250.75"), OrderTypeEnum.BUY));
 
         assertFalse(stock.getOrders().isEmpty());
     }
@@ -42,7 +43,7 @@ class StockTest {
     void shouldAddSellOrderToStock() {
         Stock stock = new Stock(STOCK_NAME, STOCK_VALUE);
 
-        stock.getOrders().add(OrderTypeFactory.CreateOrder(SELL_INVESTOR, new BigDecimal("980.30"), OrderTypeEnum.SELL));
+        stock.getOrders().add(OrderTypeFactory.createOrder(SELL_INVESTOR, new BigDecimal("980.30"), OrderTypeEnum.SELL));
 
         assertFalse(stock.getOrders().isEmpty());
     }
@@ -50,7 +51,7 @@ class StockTest {
     @Test
     void shouldRemoveExistingOrderAndBecomeEmptyAgain() {
         Stock stock = new Stock(STOCK_NAME, STOCK_VALUE);
-        IOrderType buyOrder = OrderTypeFactory.CreateOrder(BUY_INVESTOR, new BigDecimal("1250.75"), OrderTypeEnum.BUY);
+        IOrderType buyOrder = OrderTypeFactory.createOrder(BUY_INVESTOR, new BigDecimal("1250.75"), OrderTypeEnum.BUY);
 
         stock.getOrders().add(buyOrder);
         stock.getOrders().remove(buyOrder);
@@ -63,8 +64,9 @@ class StockTest {
         Stock stock = new Stock(STOCK_NAME, STOCK_VALUE);
 
         IllegalArgumentException exception = assertThrows(
-                IllegalArgumentException.class,
-                () -> stock.getOrders().add(null));
+            IllegalArgumentException.class,
+            () -> stock.getOrders().add(null)
+        );
 
         assertEquals("Ordem inválida", exception.getMessage());
     }
@@ -74,8 +76,9 @@ class StockTest {
         Stock stock = new Stock(STOCK_NAME, STOCK_VALUE);
 
         IllegalArgumentException exception = assertThrows(
-                IllegalArgumentException.class,
-                () -> stock.getOrders().remove(null));
+            IllegalArgumentException.class,
+            () -> stock.getOrders().remove(null)
+        );
 
         assertEquals("Ordem inválida", exception.getMessage());
     }
@@ -83,9 +86,34 @@ class StockTest {
     @Test
     void shouldThrowExceptionWhenCreatingOrderWithNullType() {
         IllegalArgumentException exception = assertThrows(
-                IllegalArgumentException.class,
-                () -> OrderTypeFactory.CreateOrder(BUY_INVESTOR, new BigDecimal("1250.75"), null));
+            IllegalArgumentException.class,
+            () -> OrderTypeFactory.createOrder(BUY_INVESTOR, new BigDecimal("1250.75"), null)
+        );
 
         assertEquals("Tipo de ordem inválido!", exception.getMessage());
+    }
+
+    @Test
+    void shouldKeepOrderPendingWhenThereIsNoMatchingOrder() {
+        Stock stock = new Stock(STOCK_NAME, STOCK_VALUE);
+        Investor investor = new Investor(BUY_INVESTOR);
+
+        investor.orderRegister(stock, MATCH_VALUE, OrderTypeEnum.BUY);
+
+        assertFalse(stock.getOrders().isEmpty());
+        assertEquals(STOCK_VALUE, stock.getValue());
+    }
+
+    @Test
+    void shouldMatchOrdersRemoveBothAndUpdateStockValue() {
+        Stock stock = new Stock(STOCK_NAME, STOCK_VALUE);
+        Investor buyInvestor = new Investor(BUY_INVESTOR);
+        Investor sellInvestor = new Investor(SELL_INVESTOR);
+
+        buyInvestor.orderRegister(stock, MATCH_VALUE, OrderTypeEnum.BUY);
+        sellInvestor.orderRegister(stock, new BigDecimal("24.0"), OrderTypeEnum.SELL);
+
+        assertTrue(stock.getOrders().isEmpty());
+        assertEquals(MATCH_VALUE, stock.getValue());
     }
 }
