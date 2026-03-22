@@ -2,6 +2,7 @@ package br.furb.problema02.model;
 
 import br.furb.problema02.enums.OrderTypeEnum;
 import br.furb.problema02.factories.OrderTypeFactory;
+import br.furb.problema02.model.stock.Stock;
 import br.furb.problema02.order.IOrderType;
 import org.junit.jupiter.api.Test;
 
