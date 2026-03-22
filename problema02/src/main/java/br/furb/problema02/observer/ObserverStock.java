@@ -1,6 +1,6 @@
-package br.furb.problema02.model.stock;
+package br.furb.problema02.observer;
 
-import br.furb.problema02.observer.Observer;
+import br.furb.problema02.model.stock.Stock;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,5 +14,9 @@ public class ObserverStock {
         }
 
         observerStocks.add(observer);
+    }
+
+    public void notifyObservers(Stock stock) {
+        observerStocks.forEach(observer -> observer.changedValue(stock));
     }
 }

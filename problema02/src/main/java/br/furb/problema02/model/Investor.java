@@ -27,5 +27,7 @@ public class Investor implements Observer {
 
     @Override
     public void changedValue(Stock stock) {
+        System.out.println("Investidor " + name + " notificado: " +
+                stock.getName() + " mudou para " + stock.getValue());
     }
 }
