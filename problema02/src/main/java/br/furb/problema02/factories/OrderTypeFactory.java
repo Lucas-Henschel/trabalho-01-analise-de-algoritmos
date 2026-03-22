@@ -8,7 +8,7 @@ import br.furb.problema02.order.OrderTypeSell;
 import java.math.BigDecimal;
 
 public class OrderTypeFactory {
-	public static IOrderType CreateOrder(String investorName, BigDecimal orderValue, OrderTypeEnum orderType) throws IllegalArgumentException {
+	public static IOrderType createOrder(String investorName, BigDecimal orderValue, OrderTypeEnum orderType) throws IllegalArgumentException {
 		if (orderType == null) {
 			throw new IllegalArgumentException("Tipo de ordem inválido!");
 		}

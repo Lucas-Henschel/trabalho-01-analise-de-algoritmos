@@ -1,4 +1,4 @@
-package br.furb.order;
+package br.furb.problema02.order;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -8,13 +8,12 @@ import org.junit.jupiter.api.Test;
 
 import br.furb.problema02.enums.OrderTypeEnum;
 import br.furb.problema02.factories.OrderTypeFactory;
-import br.furb.problema02.order.IOrderType;
 
 class OrderTypeSellTest {
 
 	@Test
     void shouldReturnCorrectType() {
-		IOrderType order = OrderTypeFactory.CreateOrder(
+		IOrderType order = OrderTypeFactory.createOrder(
                 "Mariana",
                 new BigDecimal("30.50"),
                 OrderTypeEnum.SELL
@@ -25,7 +24,7 @@ class OrderTypeSellTest {
 
     @Test
     void shouldReturnCorrectData() {
-    	IOrderType order = OrderTypeFactory.CreateOrder(
+    	IOrderType order = OrderTypeFactory.createOrder(
                 "Mariana",
                 new BigDecimal("30.00"),
                 OrderTypeEnum.SELL

@@ -1,14 +1,13 @@
 package br.furb.problema02.model;
 
 import br.furb.problema02.enums.OrderTypeEnum;
-import br.furb.problema02.factories.OrderTypeFactory;
 import br.furb.problema02.model.stock.Stock;
 import br.furb.problema02.observer.Observer;
 
 import java.math.BigDecimal;
 
 public class Investor implements Observer {
-    private String name;
+    private final String name;
 
     public Investor(String name) {
         this.name = name;
@@ -18,8 +17,8 @@ public class Investor implements Observer {
         return name;
     }
 
-    public void orderRegister(Stock stock, BigDecimal orderValue, OrderTypeEnum orderType) {
-        stock.getOrders().add(OrderTypeFactory.CreateOrder(getName(), orderValue, orderType));
+    public TradeResult orderRegister(Stock stock, BigDecimal orderValue, OrderTypeEnum orderType) {
+        return stock.placeOrder(getName(), orderValue, orderType);
     }
 
     public void registerForStockUpdates(Stock stock) {
