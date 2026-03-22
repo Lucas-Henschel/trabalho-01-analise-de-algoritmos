@@ -3,6 +3,7 @@ package br.furb.problema02.model.stock;
 import br.furb.problema02.enums.OrderTypeEnum;
 import br.furb.problema02.factories.OrderTypeFactory;
 import br.furb.problema02.model.Orders;
+import br.furb.problema02.model.TradeResult;
 import br.furb.problema02.observer.Observer;
 import br.furb.problema02.observer.Subject;
 import br.furb.problema02.order.IOrderType;
@@ -22,26 +23,35 @@ public class Stock implements Subject {
         return stockInfo.getValue();
     }
 
-    public Orders getOrders() {
-        return stockState.getOrders();
+    public boolean hasPendingOrders() {
+        return !orders().isEmpty();
+    }
+
+    public int pendingOrdersCount() {
+        return orders().size();
     }
 
     public Stock(String name, BigDecimal value) {
         this.stockInfo = new StockInfo(name, value);
     }
 
-    public void placeOrder(String investorName, BigDecimal orderValue, OrderTypeEnum orderType) {
+    public TradeResult placeOrder(String investorName, BigDecimal orderValue, OrderTypeEnum orderType) {
         IOrderType newOrder = OrderTypeFactory.createOrder(investorName, orderValue, orderType);
-        Optional<IOrderType> matchedOrder = getOrders().findByTypeAndValue(orderType.opposite(), orderValue);
+        Optional<IOrderType> matchedOrder = orders().findByTypeAndValue(orderType.opposite(), orderValue);
 
         if (matchedOrder.isPresent()) {
-            getOrders().remove(matchedOrder.get());
+            orders().remove(matchedOrder.get());
             stockInfo.setValue(matchedOrder.get().getOrderValue());
 
-            return;
+            return TradeResult.matched(newOrder, matchedOrder.get());
         }
 
-        getOrders().add(newOrder);
+        orders().add(newOrder);
+        return TradeResult.pending(newOrder);
+    }
+
+    private Orders orders() {
+        return stockState.getOrders();
     }
 
     @Override

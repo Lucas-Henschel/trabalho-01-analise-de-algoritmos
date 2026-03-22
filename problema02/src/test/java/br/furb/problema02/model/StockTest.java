@@ -1,9 +1,7 @@
 package br.furb.problema02.model;
 
 import br.furb.problema02.enums.OrderTypeEnum;
-import br.furb.problema02.factories.OrderTypeFactory;
 import br.furb.problema02.model.stock.Stock;
-import br.furb.problema02.order.IOrderType;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
@@ -27,80 +25,58 @@ class StockTest {
 
         assertEquals(STOCK_NAME, stock.getName());
         assertEquals(STOCK_VALUE, stock.getValue());
-        assertTrue(stock.getOrders().isEmpty());
+        assertFalse(stock.hasPendingOrders());
+        assertEquals(0, stock.pendingOrdersCount());
     }
 
     @Test
-    void shouldAddBuyOrderToStock() {
+    void shouldKeepBuyOrderPendingWhenThereIsNoMatchingOrder() {
         Stock stock = new Stock(STOCK_NAME, STOCK_VALUE);
 
-        stock.getOrders().add(OrderTypeFactory.createOrder(BUY_INVESTOR, new BigDecimal("1250.75"), OrderTypeEnum.BUY));
+        TradeResult result = stock.placeOrder(BUY_INVESTOR, new BigDecimal("1250.75"), OrderTypeEnum.BUY);
 
-        assertFalse(stock.getOrders().isEmpty());
+        assertTrue(result.isPending());
+        assertFalse(result.hasMatch());
+        assertFalse(result.getMatchedOrder().isPresent());
+        assertFalse(result.getNegotiatedValue().isPresent());
+        assertTrue(stock.hasPendingOrders());
+        assertEquals(1, stock.pendingOrdersCount());
     }
 
     @Test
-    void shouldAddSellOrderToStock() {
+    void shouldKeepSellOrderPendingWhenThereIsNoMatchingOrder() {
         Stock stock = new Stock(STOCK_NAME, STOCK_VALUE);
 
-        stock.getOrders().add(OrderTypeFactory.createOrder(SELL_INVESTOR, new BigDecimal("980.30"), OrderTypeEnum.SELL));
+        TradeResult result = stock.placeOrder(SELL_INVESTOR, new BigDecimal("980.30"), OrderTypeEnum.SELL);
 
-        assertFalse(stock.getOrders().isEmpty());
-    }
-
-    @Test
-    void shouldRemoveExistingOrderAndBecomeEmptyAgain() {
-        Stock stock = new Stock(STOCK_NAME, STOCK_VALUE);
-        IOrderType buyOrder = OrderTypeFactory.createOrder(BUY_INVESTOR, new BigDecimal("1250.75"), OrderTypeEnum.BUY);
-
-        stock.getOrders().add(buyOrder);
-        stock.getOrders().remove(buyOrder);
-
-        assertTrue(stock.getOrders().isEmpty());
-    }
-
-    @Test
-    void shouldThrowExceptionWhenAddingNullOrder() {
-        Stock stock = new Stock(STOCK_NAME, STOCK_VALUE);
-
-        IllegalArgumentException exception = assertThrows(
-            IllegalArgumentException.class,
-            () -> stock.getOrders().add(null)
-        );
-
-        assertEquals("Ordem inválida", exception.getMessage());
-    }
-
-    @Test
-    void shouldThrowExceptionWhenRemovingNullOrder() {
-        Stock stock = new Stock(STOCK_NAME, STOCK_VALUE);
-
-        IllegalArgumentException exception = assertThrows(
-            IllegalArgumentException.class,
-            () -> stock.getOrders().remove(null)
-        );
-
-        assertEquals("Ordem inválida", exception.getMessage());
+        assertTrue(result.isPending());
+        assertFalse(result.hasMatch());
+        assertTrue(stock.hasPendingOrders());
+        assertEquals(1, stock.pendingOrdersCount());
     }
 
     @Test
     void shouldThrowExceptionWhenCreatingOrderWithNullType() {
+        Stock stock = new Stock(STOCK_NAME, STOCK_VALUE);
+
         IllegalArgumentException exception = assertThrows(
             IllegalArgumentException.class,
-            () -> OrderTypeFactory.createOrder(BUY_INVESTOR, new BigDecimal("1250.75"), null)
+            () -> stock.placeOrder(BUY_INVESTOR, new BigDecimal("1250.75"), null)
         );
 
         assertEquals("Tipo de ordem inválido!", exception.getMessage());
     }
 
     @Test
-    void shouldKeepOrderPendingWhenThereIsNoMatchingOrder() {
+    void shouldKeepOrderPendingWhenInvestorRegistersWithoutMatchingOrder() {
         Stock stock = new Stock(STOCK_NAME, STOCK_VALUE);
         Investor investor = new Investor(BUY_INVESTOR);
 
-        investor.orderRegister(stock, MATCH_VALUE, OrderTypeEnum.BUY);
+        TradeResult result = investor.orderRegister(stock, MATCH_VALUE, OrderTypeEnum.BUY);
 
-        assertFalse(stock.getOrders().isEmpty());
+        assertTrue(result.isPending());
+        assertTrue(stock.hasPendingOrders());
+        assertEquals(1, stock.pendingOrdersCount());
         assertEquals(STOCK_VALUE, stock.getValue());
     }
 
@@ -111,9 +87,15 @@ class StockTest {
         Investor sellInvestor = new Investor(SELL_INVESTOR);
 
         buyInvestor.orderRegister(stock, MATCH_VALUE, OrderTypeEnum.BUY);
-        sellInvestor.orderRegister(stock, new BigDecimal("24.0"), OrderTypeEnum.SELL);
+        TradeResult result = sellInvestor.orderRegister(stock, new BigDecimal("24.0"), OrderTypeEnum.SELL);
 
-        assertTrue(stock.getOrders().isEmpty());
+        assertTrue(result.hasMatch());
+        assertFalse(result.isPending());
+        assertTrue(result.getMatchedOrder().isPresent());
+        assertTrue(result.getNegotiatedValue().isPresent());
+        assertEquals(MATCH_VALUE, result.getNegotiatedValue().orElseThrow());
+        assertFalse(stock.hasPendingOrders());
+        assertEquals(0, stock.pendingOrdersCount());
         assertEquals(MATCH_VALUE, stock.getValue());
     }
 }

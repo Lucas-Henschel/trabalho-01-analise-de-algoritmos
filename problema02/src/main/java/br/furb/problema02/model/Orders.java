@@ -31,6 +31,10 @@ public class Orders {
         orders.remove(order);
     }
 
+    public int size() {
+        return orders.size();
+    }
+
     public Optional<IOrderType> findByTypeAndValue(OrderTypeEnum orderType, BigDecimal orderValue) {
         if (orderType == null || orderValue == null) {
             throw new IllegalArgumentException("Ordem inválida");

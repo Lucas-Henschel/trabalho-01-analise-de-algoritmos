@@ -17,8 +17,8 @@ public class Investor implements Observer {
         return name;
     }
 
-    public void orderRegister(Stock stock, BigDecimal orderValue, OrderTypeEnum orderType) {
-        stock.placeOrder(getName(), orderValue, orderType);
+    public TradeResult orderRegister(Stock stock, BigDecimal orderValue, OrderTypeEnum orderType) {
+        return stock.placeOrder(getName(), orderValue, orderType);
     }
 
     public void registerForStockUpdates(Stock stock) {
