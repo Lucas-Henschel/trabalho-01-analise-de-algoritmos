@@ -1,12 +1,14 @@
 package br.furb.problema02.model;
 
+import br.furb.problema02.order.IOrderType;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class Orders {
-    private final List<Order> orders = new ArrayList<>();
+    private final List<IOrderType> orders = new ArrayList<>();
 
-    public void add(Order order) {
+    public void add(IOrderType order) {
         if (order == null) {
             throw new IllegalArgumentException("Ordem inválida");
         }
@@ -18,7 +20,7 @@ public class Orders {
         return orders.isEmpty();
     }
 
-    public void remove(Order order) {
+    public void remove(IOrderType order) {
         if (order == null) {
             throw new IllegalArgumentException("Ordem inválida");
         }

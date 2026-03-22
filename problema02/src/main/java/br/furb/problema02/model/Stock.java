@@ -2,7 +2,7 @@ package br.furb.problema02.model;
 
 import java.math.BigDecimal;
 
-public class Action {
+public class Stock {
     private String name;
     private BigDecimal value;
     private final Orders orders = new Orders();
@@ -19,7 +19,7 @@ public class Action {
         return orders;
     }
 
-    public Action(String name, BigDecimal value) {
+    public Stock(String name, BigDecimal value) {
         this.name = name;
         this.value = value;
     }
