@@ -16,40 +16,43 @@ public class Stock implements Subject {
         stockInfo = new StockInfo(name, value);
         stockRuntime = new StockRuntime(stockInfo);
     }
-
-    public String getName() { 
-        return stockInfo.getName(); 
+    
+    public String getName() {
+        return stockInfo.getName();
     }
 
-    public BigDecimal getValue() { 
-        return stockInfo.getValue(); 
+    public BigDecimal getValue() {
+        return stockInfo.getValue();
     }
 
-    public boolean hasPendingOrders() { 
-        return stockRuntime.hasPendingOrders(); 
+    public boolean hasPendingOrders() {
+        return stockRuntime.hasPendingOrders();
     }
 
-    public int pendingOrdersCount() { 
-        return stockRuntime.pendingOrdersCount(); 
+    public int pendingOrdersCount() {
+        return stockRuntime.pendingOrdersCount();
     }
 
-    public TradeResult placeOrder(String investorName, BigDecimal orderValue, OrderTypeEnum orderType) { 
-        return stockRuntime.placeOrder(this, investorName, orderValue, orderType); 
+    public TradeResult placeOrder(String investorName, BigDecimal orderValue, OrderTypeEnum orderType) {
+        return stockRuntime.placeOrder(this, investorName, orderValue, orderType);
     }
 
-    @Override public void registerObserver(Observer observer) { 
-        stockRuntime.registerObserver(observer); 
+    @Override
+    public void registerObserver(Observer observer) {
+        stockRuntime.registerObserver(observer);
     }
 
-    @Override public void removeObserver(Observer observer) { 
-        stockRuntime.removeObserver(observer); 
+    @Override
+    public void removeObserver(Observer observer) {
+        stockRuntime.removeObserver(observer);
     }
 
-    @Override public void notifyObservers() { 
-        stockRuntime.notifyObservers(this); 
+    @Override
+    public void notifyObservers() {
+        stockRuntime.notifyObservers(this);
     }
 
-    public void scheduleConditionalOrder(ConditionalOrder conditionalOrder) { 
-        stockRuntime.scheduleConditionalOrder(conditionalOrder); 
+    public void scheduleConditionalOrder(ConditionalOrder conditionalOrder) {
+        stockRuntime.scheduleConditionalOrder(conditionalOrder);
     }
 }
