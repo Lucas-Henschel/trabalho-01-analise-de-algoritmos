@@ -14,6 +14,7 @@ import java.util.Optional;
 public class TradeExecutor {
     private final StockInfo stockInfo;
     private final StockState stockState;
+    private boolean processingConditionalOrders = false;
 
     public TradeExecutor(StockInfo stockInfo, StockState stockState) {
         this.stockInfo = stockInfo;
@@ -33,10 +34,8 @@ public class TradeExecutor {
 
     private void updateStockValue(Stock stock, BigDecimal newValue) {
         stockInfo.setValue(newValue);
-
-        processConditionalOrders(stock);
-
         stockState.notifyObservers(stock);
+        processConditionalOrders(stock);
     }
 
     private Orders orders() {
@@ -55,8 +54,22 @@ public class TradeExecutor {
     }
     
     private void processConditionalOrders(Stock stock) {
-        List<ConditionalOrder> toExecute = collectConditionalOrdersToExecute();
-        executeConditionalOrders(stock, toExecute);
+        if (processingConditionalOrders) {
+            return;
+        }
+
+        processingConditionalOrders = true;
+
+        try {
+            List<ConditionalOrder> toExecute = collectConditionalOrdersToExecute();
+
+            while (!toExecute.isEmpty()) {
+                executeConditionalOrders(stock, toExecute);
+                toExecute = collectConditionalOrdersToExecute();
+            }
+        } finally {
+            processingConditionalOrders = false;
+        }
     }
 
     private List<ConditionalOrder> collectConditionalOrdersToExecute() {
@@ -71,9 +84,12 @@ public class TradeExecutor {
 
     private void executeConditionalOrders(Stock stock, List<ConditionalOrder> toExecute) {
         for (ConditionalOrder conditional : toExecute) {
+            if (!stockState.getConditionalOrders().remove(conditional)) {
+                continue;
+            }
+
             IOrderType order = conditional.getOrder();
             processOrder(stock, order, order.getOrderType());
-            stockState.getConditionalOrders().remove(conditional);
         }
     }
 }

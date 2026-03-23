@@ -2,6 +2,8 @@ package br.furb.problema02.conditionalorder;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.math.BigDecimal;
 
 import org.junit.jupiter.api.Test;
@@ -9,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import br.furb.problema02.enums.OrderTypeEnum;
 import br.furb.problema02.factories.ConditionalOrderFactory;
 import br.furb.problema02.model.Investor;
+import br.furb.problema02.model.TradeResult;
 import br.furb.problema02.model.stock.Stock;
 
 class ConditionalOrderTest {
@@ -75,6 +78,56 @@ class ConditionalOrderTest {
        // agora a ordem condicional deve ter sido executada
        assertEquals(new BigDecimal("25"), stock.getValue());
    }
+
+    @Test
+    void shouldNotLeavePendingOrderAfterConditionalOrderMatchesImmediately() {
+        Stock stock = new Stock("PETR4", new BigDecimal("30"));
+
+        Investor joao = new Investor("João");
+
+        ConditionalOrder conditional = ConditionalOrderFactory.create(
+            joao.getName(),
+            new BigDecimal("25"),
+            OrderTypeEnum.BUY,
+            new PriceBelowCondition(new BigDecimal("28"))
+        );
+
+        joao.scheduleConditionalOrder(stock, conditional);
+
+        stock.placeOrder("Maria", new BigDecimal("25"), OrderTypeEnum.SELL);
+        stock.placeOrder("Carlos", new BigDecimal("28"), OrderTypeEnum.SELL);
+        stock.placeOrder("Ana", new BigDecimal("28"), OrderTypeEnum.BUY);
+
+        assertEquals(new BigDecimal("25"), stock.getValue());
+        assertEquals(0, stock.pendingOrdersCount());
+    }
+
+    @Test
+    void shouldNotCreateGhostOrderAfterConditionalOrderExecutes() {
+        Stock stock = new Stock("PETR4", new BigDecimal("30"));
+
+        Investor joao = new Investor("João");
+
+        ConditionalOrder conditional = ConditionalOrderFactory.create(
+            joao.getName(),
+            new BigDecimal("25"),
+            OrderTypeEnum.BUY,
+            new PriceBelowCondition(new BigDecimal("28"))
+        );
+
+        joao.scheduleConditionalOrder(stock, conditional);
+
+        stock.placeOrder("Maria", new BigDecimal("25"), OrderTypeEnum.SELL);
+        stock.placeOrder("Carlos", new BigDecimal("28"), OrderTypeEnum.SELL);
+        stock.placeOrder("Ana", new BigDecimal("28"), OrderTypeEnum.BUY);
+
+        TradeResult result = stock.placeOrder("Pedro", new BigDecimal("25"), OrderTypeEnum.SELL);
+
+        assertTrue(result.isPending());
+        assertFalse(result.hasMatch());
+        assertEquals(1, stock.pendingOrdersCount());
+        assertEquals(new BigDecimal("25"), stock.getValue());
+    }
     
     @Test
     void shouldNotExecuteConditionalOrderWhenConditionIsNotMet() {
@@ -132,4 +185,41 @@ class ConditionalOrderTest {
        // valor muda normalmente (isso é esperado!)
        assertEquals(new BigDecimal("28"), stock.getValue());
    }
+
+    @Test
+    void shouldNotifyObserversInChronologicalOrderForTriggerAndConditionalMatch() {
+        Stock stock = new Stock("PETR4", new BigDecimal("30"));
+        Investor observer = new Investor("Observador");
+        Investor joao = new Investor("João");
+
+        observer.registerForStockUpdates(stock);
+
+        ConditionalOrder conditional = ConditionalOrderFactory.create(
+            joao.getName(),
+            new BigDecimal("25"),
+            OrderTypeEnum.BUY,
+            new PriceBelowCondition(new BigDecimal("28"))
+        );
+
+        joao.scheduleConditionalOrder(stock, conditional);
+
+        stock.placeOrder("Maria", new BigDecimal("25"), OrderTypeEnum.SELL);
+        stock.placeOrder("Carlos", new BigDecimal("28"), OrderTypeEnum.SELL);
+
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        PrintStream originalOut = System.out;
+        System.setOut(new PrintStream(outputStream));
+
+        try {
+            stock.placeOrder("Ana", new BigDecimal("28"), OrderTypeEnum.BUY);
+        } finally {
+            System.setOut(originalOut);
+        }
+
+        String[] lines = outputStream.toString().trim().split("\\R");
+
+        assertEquals(2, lines.length);
+        assertTrue(lines[0].contains("mudou para 28"));
+        assertTrue(lines[1].contains("mudou para 25"));
+    }
 }
