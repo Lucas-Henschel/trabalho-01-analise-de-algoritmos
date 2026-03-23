@@ -3,7 +3,7 @@ package br.furb.problema02.service;
 import java.util.ArrayList;
 import java.util.List;
 
-import br.furb.problema02.conditionalorder.ConditionalOrder;
+import br.furb.problema02.conditionalOrder.ConditionalOrder;
 import br.furb.problema02.model.Orders;
 import br.furb.problema02.model.stock.Stock;
 import br.furb.problema02.observer.Observer;

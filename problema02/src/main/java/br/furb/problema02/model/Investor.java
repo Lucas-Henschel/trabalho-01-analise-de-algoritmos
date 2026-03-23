@@ -1,6 +1,6 @@
 package br.furb.problema02.model;
 
-import br.furb.problema02.conditionalorder.ConditionalOrder;
+import br.furb.problema02.conditionalOrder.ConditionalOrder;
 import br.furb.problema02.enums.OrderTypeEnum;
 import br.furb.problema02.model.stock.Stock;
 import br.furb.problema02.observer.Observer;

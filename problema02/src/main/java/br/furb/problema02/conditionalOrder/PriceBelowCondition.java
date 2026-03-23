@@ -1,11 +1,10 @@
-package br.furb.problema02.conditionalorder;
+package br.furb.problema02.conditionalOrder;
 
 import java.math.BigDecimal;
 
 import br.furb.problema02.enums.CompareResultsEnum;
 
 public class PriceBelowCondition implements ICondition {
-
     private final BigDecimal target;
 
     public PriceBelowCondition(BigDecimal target) {
@@ -14,6 +13,6 @@ public class PriceBelowCondition implements ICondition {
 
     @Override
     public boolean verifyCondition(BigDecimal stockValue) {
-        return stockValue.compareTo(target) <= CompareResultsEnum.ZERO.getValue();
+        return stockValue.compareTo(target) <= CompareResultsEnum.EQUALITY_RESULT.getValue();
     }
 }

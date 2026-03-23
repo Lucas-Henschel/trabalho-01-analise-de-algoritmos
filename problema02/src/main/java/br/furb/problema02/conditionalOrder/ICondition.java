@@ -1,4 +1,4 @@
-package br.furb.problema02.conditionalorder;
+package br.furb.problema02.conditionalOrder;
 
 import java.math.BigDecimal;
 
