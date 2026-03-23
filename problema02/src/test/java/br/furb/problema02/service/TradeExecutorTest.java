@@ -15,7 +15,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.math.BigDecimal;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class TradeExecutorTest {
 
@@ -111,7 +114,7 @@ class TradeExecutorTest {
     @Test
     void shouldNotifyObserversAfterMatch() {
         Investor observer = new Investor("João");
-        stockState.registerObserverStocks(observer);
+        stock.registerObserver(observer);
 
         IOrderType sellOrder = OrderTypeFactory.createOrder(
             "João",
@@ -156,11 +159,9 @@ class TradeExecutorTest {
             OrderTypeEnum.SELL
         );
 
-        // Add buy order
         stockState.getOrders().add(buyOrder);
         assertEquals(1, stockState.getOrders().size());
 
-        // Process sell order - should match and remove both
         tradeExecutor.processOrder(stock, sellOrder, OrderTypeEnum.SELL);
 
         assertTrue(stockState.getOrders().isEmpty());

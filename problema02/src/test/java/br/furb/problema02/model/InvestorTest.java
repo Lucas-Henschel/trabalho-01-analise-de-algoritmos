@@ -1,6 +1,7 @@
 package br.furb.problema02.model;
 
 import br.furb.problema02.enums.OrderTypeEnum;
+import br.furb.problema02.factories.ConditionalOrderFactory;
 import br.furb.problema02.model.stock.Stock;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,7 +11,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.math.BigDecimal;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class InvestorTest {
 
@@ -18,7 +23,7 @@ class InvestorTest {
     private static final BigDecimal STOCK_PRICE = new BigDecimal("30.00");
     private static final BigDecimal PRICE_50_00 = new BigDecimal("50.00");
     private static final String INVESTOR_NAME = "João Silva";
-    
+
     private Stock stock;
     private Investor investor;
     private final PrintStream originalOut = System.out;
@@ -37,6 +42,26 @@ class InvestorTest {
     @Test
     void shouldCreateInvestorWithName() {
         assertEquals(INVESTOR_NAME, investor.getName());
+    }
+
+    @Test
+    void shouldThrowExceptionWhenCreatingInvestorWithNullName() {
+        IllegalArgumentException exception = assertThrows(
+            IllegalArgumentException.class,
+            () -> new Investor(null)
+        );
+
+        assertEquals("Nome do investidor inválido", exception.getMessage());
+    }
+
+    @Test
+    void shouldThrowExceptionWhenCreatingInvestorWithBlankName() {
+        IllegalArgumentException exception = assertThrows(
+            IllegalArgumentException.class,
+            () -> new Investor("   ")
+        );
+
+        assertEquals("Nome do investidor inválido", exception.getMessage());
     }
 
     @Test
@@ -60,8 +85,56 @@ class InvestorTest {
     }
 
     @Test
+    void shouldThrowExceptionWhenRegisteringOrderWithNullStock() {
+        IllegalArgumentException exception = assertThrows(
+            IllegalArgumentException.class,
+            () -> investor.orderRegister(null, STOCK_PRICE, OrderTypeEnum.BUY)
+        );
+
+        assertEquals("Ação inválida", exception.getMessage());
+    }
+
+    @Test
     void shouldRegisterForStockUpdates() {
         assertDoesNotThrow(() -> investor.registerForStockUpdates(stock));
+    }
+
+    @Test
+    void shouldThrowExceptionWhenRegisteringForUpdatesWithNullStock() {
+        IllegalArgumentException exception = assertThrows(
+            IllegalArgumentException.class,
+            () -> investor.registerForStockUpdates(null)
+        );
+
+        assertEquals("Ação inválida", exception.getMessage());
+    }
+
+    @Test
+    void shouldThrowExceptionWhenSchedulingConditionalOrderWithNullStock() {
+        IllegalArgumentException exception = assertThrows(
+            IllegalArgumentException.class,
+            () -> investor.scheduleConditionalOrder(
+                null,
+                ConditionalOrderFactory.create(
+                    INVESTOR_NAME,
+                    STOCK_PRICE,
+                    OrderTypeEnum.BUY,
+                    stockValue -> true
+                )
+            )
+        );
+
+        assertEquals("Ação inválida", exception.getMessage());
+    }
+
+    @Test
+    void shouldThrowExceptionWhenSchedulingConditionalOrderWithNullOrder() {
+        IllegalArgumentException exception = assertThrows(
+            IllegalArgumentException.class,
+            () -> investor.scheduleConditionalOrder(stock, null)
+        );
+
+        assertEquals("Ordem inválida", exception.getMessage());
     }
 
     @Test
@@ -75,7 +148,7 @@ class InvestorTest {
         try {
             investor.changedValue(stock);
             String output = outputStream.toString().trim();
-            
+
             assertTrue(output.contains("Investidor " + INVESTOR_NAME + " notificado"));
             assertTrue(output.contains(STOCK_NAME));
             assertTrue(output.contains(STOCK_PRICE.toString()));
@@ -91,10 +164,6 @@ class InvestorTest {
         investor.registerForStockUpdates(stock);
         investor2.registerForStockUpdates(stock);
 
-        /* 
-        o teste ta passando mesmo com o investorName = "Comprador" e "Vendedor",
-        acredito que esse comportamento ta zoado, precisamos revisar a implementação
-         */
         stock.placeOrder("Comprador", PRICE_50_00, OrderTypeEnum.BUY);
 
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -104,7 +173,7 @@ class InvestorTest {
         try {
             stock.placeOrder("Vendedor", PRICE_50_00, OrderTypeEnum.SELL);
             String output = outputStream.toString();
-            
+
             assertTrue(output.contains("João Silva"));
             assertTrue(output.contains("Paula"));
         } finally {
