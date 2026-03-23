@@ -11,6 +11,10 @@ public class Investor implements Observer {
     private final String name;
 
     public Investor(String name) {
+        if (name == null || name.isBlank()) {
+            throw new IllegalArgumentException("Nome do investidor inválido");
+        }
+
         this.name = name;
     }
 
@@ -19,20 +23,39 @@ public class Investor implements Observer {
     }
 
     public TradeResult orderRegister(Stock stock, BigDecimal orderValue, OrderTypeEnum orderType) {
+        if (stock == null) {
+            throw new IllegalArgumentException("Ação inválida");
+        }
+
         return stock.placeOrder(getName(), orderValue, orderType);
     }
 
     public void registerForStockUpdates(Stock stock) {
+        if (stock == null) {
+            throw new IllegalArgumentException("Ação inválida");
+        }
+
         stock.registerObserver(this);
     }
 
     @Override
     public void changedValue(Stock stock) {
-        System.out.println("Investidor " + name + " notificado: " +
-                stock.getName() + " mudou para " + stock.getValue());
+        System.out.println(
+            "Investidor " + name + " notificado: " +
+            stock.getName() + " mudou para " + 
+            stock.getValue()
+        );
     }
-    
+
     public void scheduleConditionalOrder(Stock stock, ConditionalOrder order) {
+        if (stock == null) {
+            throw new IllegalArgumentException("Ação inválida");
+        }
+
+        if (order == null) {
+            throw new IllegalArgumentException("Ordem inválida");
+        }
+
         stock.scheduleConditionalOrder(order);
     }
 }

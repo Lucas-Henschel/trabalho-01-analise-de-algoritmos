@@ -2,8 +2,10 @@ package br.furb.problema02.service;
 
 import br.furb.problema02.conditionalOrder.ConditionalOrder;
 import br.furb.problema02.enums.OrderTypeEnum;
-import br.furb.problema02.model.*;
-import br.furb.problema02.model.stock.*;
+import br.furb.problema02.model.Orders;
+import br.furb.problema02.model.TradeResult;
+import br.furb.problema02.model.stock.Stock;
+import br.furb.problema02.model.stock.StockInfo;
 import br.furb.problema02.order.IOrderType;
 
 import java.math.BigDecimal;
@@ -34,7 +36,7 @@ public class TradeExecutor {
 
     private void updateStockValue(Stock stock, BigDecimal newValue) {
         stockInfo.setValue(newValue);
-        stockState.notifyObservers(stock);
+        stock.notifyObservers();
         processConditionalOrders(stock);
     }
 
@@ -52,7 +54,7 @@ public class TradeExecutor {
         orders().add(newOrder);
         return TradeResult.pending(newOrder);
     }
-    
+
     private void processConditionalOrders(Stock stock) {
         if (processingConditionalOrders) {
             return;
