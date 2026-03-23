@@ -1,6 +1,6 @@
 package br.furb.problema02.observer;
 
-import br.furb.problema02.model.Investor;
+import br.furb.problema02.model.investor.Investor;
 import br.furb.problema02.model.stock.Stock;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

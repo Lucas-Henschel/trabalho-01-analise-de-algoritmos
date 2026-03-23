@@ -2,6 +2,7 @@ package br.furb.problema02.model;
 
 import br.furb.problema02.enums.OrderTypeEnum;
 import br.furb.problema02.factories.ConditionalOrderFactory;
+import br.furb.problema02.model.investor.Investor;
 import br.furb.problema02.model.stock.Stock;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

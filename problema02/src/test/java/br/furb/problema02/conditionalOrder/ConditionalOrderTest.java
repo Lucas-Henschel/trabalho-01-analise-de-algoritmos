@@ -15,8 +15,8 @@ import org.junit.jupiter.api.Test;
 
 import br.furb.problema02.enums.OrderTypeEnum;
 import br.furb.problema02.factories.ConditionalOrderFactory;
-import br.furb.problema02.model.Investor;
 import br.furb.problema02.model.TradeResult;
+import br.furb.problema02.model.investor.Investor;
 import br.furb.problema02.model.stock.Stock;
 
 class ConditionalOrderTest {
