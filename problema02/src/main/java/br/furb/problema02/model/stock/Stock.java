@@ -1,5 +1,6 @@
 package br.furb.problema02.model.stock;
 
+import br.furb.problema02.conditionalOrder.ConditionalOrder;
 import br.furb.problema02.enums.OrderTypeEnum;
 import br.furb.problema02.factories.OrderTypeFactory;
 import br.furb.problema02.model.*;
@@ -47,5 +48,9 @@ public class Stock implements Subject {
     @Override
     public void registerObserver(Observer observer) {
         stockState.registerObserverStocks(observer);
+    }
+    
+    public void scheduleConditionalOrder(ConditionalOrder conditionalOrder) {
+        stockState.addConditionalOrder(conditionalOrder);
     }
 }

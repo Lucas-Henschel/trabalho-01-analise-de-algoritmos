@@ -1,16 +1,20 @@
 package br.furb.problema02.service;
 
+import br.furb.problema02.conditionalOrder.ConditionalOrder;
 import br.furb.problema02.enums.OrderTypeEnum;
 import br.furb.problema02.model.*;
 import br.furb.problema02.model.stock.*;
 import br.furb.problema02.order.IOrderType;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 public class TradeExecutor {
     private final StockInfo stockInfo;
     private final StockState stockState;
+    private boolean processingConditionalOrders = false;
 
     public TradeExecutor(StockInfo stockInfo, StockState stockState) {
         this.stockInfo = stockInfo;
@@ -31,6 +35,7 @@ public class TradeExecutor {
     private void updateStockValue(Stock stock, BigDecimal newValue) {
         stockInfo.setValue(newValue);
         stockState.notifyObservers(stock);
+        processConditionalOrders(stock);
     }
 
     private Orders orders() {
@@ -46,5 +51,45 @@ public class TradeExecutor {
     private TradeResult addPendingOrder(IOrderType newOrder) {
         orders().add(newOrder);
         return TradeResult.pending(newOrder);
+    }
+    
+    private void processConditionalOrders(Stock stock) {
+        if (processingConditionalOrders) {
+            return;
+        }
+
+        processingConditionalOrders = true;
+
+        try {
+            List<ConditionalOrder> toExecute = collectConditionalOrdersToExecute();
+
+            while (!toExecute.isEmpty()) {
+                executeConditionalOrders(stock, toExecute);
+                toExecute = collectConditionalOrdersToExecute();
+            }
+        } finally {
+            processingConditionalOrders = false;
+        }
+    }
+
+    private List<ConditionalOrder> collectConditionalOrdersToExecute() {
+        List<ConditionalOrder> toExecute = new ArrayList<>();
+        for (ConditionalOrder conditional : stockState.getConditionalOrders()) {
+            if (conditional.shouldExecute(stockInfo.getValue())) {
+                toExecute.add(conditional);
+            }
+        }
+        return toExecute;
+    }
+
+    private void executeConditionalOrders(Stock stock, List<ConditionalOrder> toExecute) {
+        for (ConditionalOrder conditional : toExecute) {
+            if (!stockState.getConditionalOrders().remove(conditional)) {
+                continue;
+            }
+
+            IOrderType order = conditional.getOrder();
+            processOrder(stock, order, order.getOrderType());
+        }
     }
 }
