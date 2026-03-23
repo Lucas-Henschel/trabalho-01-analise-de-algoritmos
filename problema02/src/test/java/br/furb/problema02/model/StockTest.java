@@ -3,6 +3,8 @@ package br.furb.problema02.model;
 import br.furb.problema02.enums.OrderTypeEnum;
 import br.furb.problema02.model.investor.Investor;
 import br.furb.problema02.model.stock.Stock;
+import br.furb.problema02.model.trade.TradeResult;
+
 import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayOutputStream;

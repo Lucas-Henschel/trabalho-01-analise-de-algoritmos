@@ -1,4 +1,4 @@
-package br.furb.problema02.model;
+package br.furb.problema02.model.trade;
 
 import br.furb.problema02.order.IOrderType;
 
@@ -7,21 +7,19 @@ import java.util.Optional;
 
 public final class TradeResult {
     private final IOrderType incomingOrder;
-    private final IOrderType matchedOrder;
-    private final BigDecimal negotiatedValue;
+    private final TradeMatch tradeMatch;
 
-    private TradeResult(IOrderType incomingOrder, IOrderType matchedOrder, BigDecimal negotiatedValue) {
+    private TradeResult(IOrderType incomingOrder, TradeMatch tradeMatch) {
         this.incomingOrder = incomingOrder;
-        this.matchedOrder = matchedOrder;
-        this.negotiatedValue = negotiatedValue;
+        this.tradeMatch = tradeMatch;
     }
 
     public static TradeResult pending(IOrderType incomingOrder) {
-        return new TradeResult(incomingOrder, null, null);
+        return new TradeResult(incomingOrder, TradeMatch.pending());
     }
 
     public static TradeResult matched(IOrderType incomingOrder, IOrderType matchedOrder) {
-        return new TradeResult(incomingOrder, matchedOrder, matchedOrder.getOrderValue());
+        return new TradeResult(incomingOrder, TradeMatch.matched(matchedOrder));
     }
 
     public IOrderType getIncomingOrder() {
@@ -29,18 +27,18 @@ public final class TradeResult {
     }
 
     public Optional<IOrderType> getMatchedOrder() {
-        return Optional.ofNullable(matchedOrder);
+        return tradeMatch.getMatchedOrder();
     }
 
     public Optional<BigDecimal> getNegotiatedValue() {
-        return Optional.ofNullable(negotiatedValue);
+        return tradeMatch.getNegotiatedValue();
     }
 
     public boolean hasMatch() {
-        return matchedOrder != null;
+        return tradeMatch.hasMatch();
     }
 
     public boolean isPending() {
-        return !hasMatch();
+        return tradeMatch.isPending();
     }
 }

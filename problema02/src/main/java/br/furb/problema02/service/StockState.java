@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.furb.problema02.conditionalOrder.ConditionalOrder;
-import br.furb.problema02.model.Orders;
+import br.furb.problema02.model.order.Orders;
 
 public class StockState {
     private final Orders orders = new Orders();

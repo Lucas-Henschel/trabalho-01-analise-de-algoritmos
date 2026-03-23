@@ -2,8 +2,8 @@ package br.furb.problema02.model.investor;
 
 import br.furb.problema02.conditionalOrder.ConditionalOrder;
 import br.furb.problema02.enums.OrderTypeEnum;
-import br.furb.problema02.model.TradeResult;
 import br.furb.problema02.model.stock.Stock;
+import br.furb.problema02.model.trade.TradeResult;
 import br.furb.problema02.observer.Observer;
 
 import java.math.BigDecimal;

@@ -4,7 +4,7 @@ import br.furb.problema02.conditionalOrder.ConditionalOrder;
 import br.furb.problema02.enums.OrderTypeEnum;
 import br.furb.problema02.factories.ConditionalOrderFactory;
 import br.furb.problema02.factories.OrderTypeFactory;
-import br.furb.problema02.model.Orders;
+import br.furb.problema02.model.order.Orders;
 import br.furb.problema02.order.IOrderType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

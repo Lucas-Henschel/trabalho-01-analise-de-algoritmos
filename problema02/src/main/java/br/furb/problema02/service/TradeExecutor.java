@@ -2,10 +2,10 @@ package br.furb.problema02.service;
 
 import br.furb.problema02.conditionalOrder.ConditionalOrder;
 import br.furb.problema02.enums.OrderTypeEnum;
-import br.furb.problema02.model.Orders;
-import br.furb.problema02.model.TradeResult;
+import br.furb.problema02.model.order.Orders;
 import br.furb.problema02.model.stock.Stock;
 import br.furb.problema02.model.stock.StockInfo;
+import br.furb.problema02.model.trade.TradeResult;
 import br.furb.problema02.order.IOrderType;
 
 import java.math.BigDecimal;
