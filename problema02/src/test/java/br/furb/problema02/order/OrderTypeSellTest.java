@@ -1,6 +1,6 @@
 package br.furb.problema02.order;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.math.BigDecimal;
 
@@ -11,12 +11,12 @@ import br.furb.problema02.factories.OrderTypeFactory;
 
 class OrderTypeSellTest {
 
-	@Test
+    @Test
     void shouldReturnCorrectType() {
-		IOrderType order = OrderTypeFactory.createOrder(
-                "Mariana",
-                new BigDecimal("30.50"),
-                OrderTypeEnum.SELL
+        IOrderType order = OrderTypeFactory.createOrder(
+            "Mariana",
+            new BigDecimal("30.50"),
+            OrderTypeEnum.SELL
         );
 
         assertEquals(OrderTypeEnum.SELL, order.getOrderType());
@@ -24,14 +24,13 @@ class OrderTypeSellTest {
 
     @Test
     void shouldReturnCorrectData() {
-    	IOrderType order = OrderTypeFactory.createOrder(
-                "Mariana",
-                new BigDecimal("30.00"),
-                OrderTypeEnum.SELL
+        IOrderType order = OrderTypeFactory.createOrder(
+            "Mariana",
+            new BigDecimal("30.00"),
+            OrderTypeEnum.SELL
         );
 
         assertEquals("Mariana", order.getInvestorName());
         assertEquals(new BigDecimal("30.00"), order.getOrderValue());
     }
-
 }

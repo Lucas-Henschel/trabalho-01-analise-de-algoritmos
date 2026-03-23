@@ -1,4 +1,4 @@
-package br.furb.problema02.model;
+package br.furb.problema02.model.order;
 
 import br.furb.problema02.enums.OrderTypeEnum;
 import br.furb.problema02.order.IOrderType;

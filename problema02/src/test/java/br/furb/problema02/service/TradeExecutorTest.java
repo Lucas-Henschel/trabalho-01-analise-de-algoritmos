@@ -2,10 +2,10 @@ package br.furb.problema02.service;
 
 import br.furb.problema02.enums.OrderTypeEnum;
 import br.furb.problema02.factories.OrderTypeFactory;
-import br.furb.problema02.model.Investor;
-import br.furb.problema02.model.TradeResult;
+import br.furb.problema02.model.investor.Investor;
 import br.furb.problema02.model.stock.Stock;
 import br.furb.problema02.model.stock.StockInfo;
+import br.furb.problema02.model.trade.TradeResult;
 import br.furb.problema02.order.IOrderType;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,7 +15,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.math.BigDecimal;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class TradeExecutorTest {
 
@@ -111,7 +114,7 @@ class TradeExecutorTest {
     @Test
     void shouldNotifyObserversAfterMatch() {
         Investor observer = new Investor("João");
-        stockState.registerObserverStocks(observer);
+        stock.registerObserver(observer);
 
         IOrderType sellOrder = OrderTypeFactory.createOrder(
             "João",
@@ -156,11 +159,9 @@ class TradeExecutorTest {
             OrderTypeEnum.SELL
         );
 
-        // Add buy order
         stockState.getOrders().add(buyOrder);
         assertEquals(1, stockState.getOrders().size());
 
-        // Process sell order - should match and remove both
         tradeExecutor.processOrder(stock, sellOrder, OrderTypeEnum.SELL);
 
         assertTrue(stockState.getOrders().isEmpty());

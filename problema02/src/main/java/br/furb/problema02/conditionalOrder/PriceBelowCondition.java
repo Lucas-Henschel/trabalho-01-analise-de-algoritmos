@@ -8,6 +8,10 @@ public class PriceBelowCondition implements ICondition {
     private final BigDecimal target;
 
     public PriceBelowCondition(BigDecimal target) {
+        if (target == null || target.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new IllegalArgumentException("Valor alvo inválido");
+        }
+
         this.target = target;
     }
 

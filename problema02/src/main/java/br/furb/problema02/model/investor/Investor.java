@@ -1,38 +1,40 @@
-package br.furb.problema02.model;
+package br.furb.problema02.model.investor;
 
 import br.furb.problema02.conditionalOrder.ConditionalOrder;
 import br.furb.problema02.enums.OrderTypeEnum;
 import br.furb.problema02.model.stock.Stock;
+import br.furb.problema02.model.trade.TradeResult;
 import br.furb.problema02.observer.Observer;
 
 import java.math.BigDecimal;
 
 public class Investor implements Observer {
-    private final String name;
+    private final InvestorInfo investorInfo;
+    private final InvestorRuntime investorRuntime;
 
     public Investor(String name) {
-        this.name = name;
+        investorInfo = new InvestorInfo(name);
+        investorRuntime = new InvestorRuntime(investorInfo);
     }
 
     public String getName() {
-        return name;
+        return investorInfo.getName();
     }
 
     public TradeResult orderRegister(Stock stock, BigDecimal orderValue, OrderTypeEnum orderType) {
-        return stock.placeOrder(getName(), orderValue, orderType);
+        return investorRuntime.orderRegister(stock, orderValue, orderType);
     }
 
     public void registerForStockUpdates(Stock stock) {
-        stock.registerObserver(this);
+        investorRuntime.registerForStockUpdates(this, stock);
     }
 
     @Override
     public void changedValue(Stock stock) {
-        System.out.println("Investidor " + name + " notificado: " +
-                stock.getName() + " mudou para " + stock.getValue());
+        investorRuntime.changedValue(stock);
     }
-    
+
     public void scheduleConditionalOrder(Stock stock, ConditionalOrder order) {
-        stock.scheduleConditionalOrder(order);
+        investorRuntime.scheduleConditionalOrder(stock, order);
     }
 }

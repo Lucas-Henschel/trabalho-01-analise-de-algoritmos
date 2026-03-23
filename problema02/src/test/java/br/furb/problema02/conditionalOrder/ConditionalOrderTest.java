@@ -1,6 +1,11 @@
 package br.furb.problema02.conditionalOrder;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -10,12 +15,12 @@ import org.junit.jupiter.api.Test;
 
 import br.furb.problema02.enums.OrderTypeEnum;
 import br.furb.problema02.factories.ConditionalOrderFactory;
-import br.furb.problema02.model.Investor;
-import br.furb.problema02.model.TradeResult;
+import br.furb.problema02.model.investor.Investor;
 import br.furb.problema02.model.stock.Stock;
+import br.furb.problema02.model.trade.TradeResult;
 
 class ConditionalOrderTest {
-	@Test
+    @Test
     void shouldReturnTrueWhenPriceIsBelowTarget() {
         ICondition condition = new PriceBelowCondition(new BigDecimal("50"));
 
@@ -23,8 +28,8 @@ class ConditionalOrderTest {
         assertTrue(condition.verifyCondition(new BigDecimal("50")));
         assertFalse(condition.verifyCondition(new BigDecimal("51")));
     }
-	
-	@Test
+
+    @Test
     void shouldReturnTrueWhenPriceIsAboveTarget() {
         ICondition condition = new PriceAboveCondition(new BigDecimal("50"));
 
@@ -32,7 +37,49 @@ class ConditionalOrderTest {
         assertTrue(condition.verifyCondition(new BigDecimal("50")));
         assertFalse(condition.verifyCondition(new BigDecimal("49")));
     }
-	
+
+    @Test
+    void shouldThrowExceptionWhenCreatingPriceBelowConditionWithInvalidTarget() {
+        assertAll(
+            () -> assertEquals(
+                "Valor alvo inválido",
+                assertThrows(IllegalArgumentException.class, () -> new PriceBelowCondition(null)).getMessage()
+            ),
+            () -> assertEquals(
+                "Valor alvo inválido",
+                assertThrows(IllegalArgumentException.class, () -> new PriceBelowCondition(BigDecimal.ZERO)).getMessage()
+            ),
+            () -> assertEquals(
+                "Valor alvo inválido",
+                assertThrows(
+                    IllegalArgumentException.class,
+                    () -> new PriceBelowCondition(new BigDecimal("-1.00"))
+                ).getMessage()
+            )
+        );
+    }
+
+    @Test
+    void shouldThrowExceptionWhenCreatingPriceAboveConditionWithInvalidTarget() {
+        assertAll(
+            () -> assertEquals(
+                "Valor alvo inválido",
+                assertThrows(IllegalArgumentException.class, () -> new PriceAboveCondition(null)).getMessage()
+            ),
+            () -> assertEquals(
+                "Valor alvo inválido",
+                assertThrows(IllegalArgumentException.class, () -> new PriceAboveCondition(BigDecimal.ZERO)).getMessage()
+            ),
+            () -> assertEquals(
+                "Valor alvo inválido",
+                assertThrows(
+                    IllegalArgumentException.class,
+                    () -> new PriceAboveCondition(new BigDecimal("-1.00"))
+                ).getMessage()
+            )
+        );
+    }
+
     @Test
     void shouldCreateConditionalOrderWithFactory() {
         ConditionalOrder order = ConditionalOrderFactory.create(
@@ -47,30 +94,30 @@ class ConditionalOrderTest {
         assertEquals(new BigDecimal("30"), order.getOrder().getOrderValue());
         assertEquals(OrderTypeEnum.BUY, order.getOrder().getOrderType());
     }
-    
-   @Test
-   void shouldExecuteConditionalOrderWhenConditionIsMet() {
-       Stock stock = new Stock("PETR4", new BigDecimal("30"));
 
-       Investor joao = new Investor("João");
+    @Test
+    void shouldExecuteConditionalOrderWhenConditionIsMet() {
+        Stock stock = new Stock("PETR4", new BigDecimal("30"));
 
-       ConditionalOrder conditional = ConditionalOrderFactory.create(
-           joao.getName(),
-           new BigDecimal("25"),
-           OrderTypeEnum.BUY,
-           new PriceBelowCondition(new BigDecimal("28"))
-       );
+        Investor joao = new Investor("João");
 
-       joao.scheduleConditionalOrder(stock, conditional);
+        ConditionalOrder conditional = ConditionalOrderFactory.create(
+            joao.getName(),
+            new BigDecimal("25"),
+            OrderTypeEnum.BUY,
+            new PriceBelowCondition(new BigDecimal("28"))
+        );
 
-       stock.placeOrder("Maria", new BigDecimal("25"), OrderTypeEnum.SELL);
-       assertEquals(1, stock.pendingOrdersCount());
+        joao.scheduleConditionalOrder(stock, conditional);
 
-       stock.placeOrder("Carlos", new BigDecimal("28"), OrderTypeEnum.SELL);
-       stock.placeOrder("Ana", new BigDecimal("28"), OrderTypeEnum.BUY);
+        stock.placeOrder("Maria", new BigDecimal("25"), OrderTypeEnum.SELL);
+        assertEquals(1, stock.pendingOrdersCount());
 
-       assertEquals(new BigDecimal("25"), stock.getValue());
-   }
+        stock.placeOrder("Carlos", new BigDecimal("28"), OrderTypeEnum.SELL);
+        stock.placeOrder("Ana", new BigDecimal("28"), OrderTypeEnum.BUY);
+
+        assertEquals(new BigDecimal("25"), stock.getValue());
+    }
 
     @Test
     void shouldNotLeavePendingOrderAfterConditionalOrderMatchesImmediately() {
@@ -121,7 +168,7 @@ class ConditionalOrderTest {
         assertEquals(1, stock.pendingOrdersCount());
         assertEquals(new BigDecimal("25"), stock.getValue());
     }
-    
+
     @Test
     void shouldNotExecuteConditionalOrderWhenConditionIsNotMet() {
         Stock stock = new Stock("VALE3", new BigDecimal("60"));
@@ -132,7 +179,7 @@ class ConditionalOrderTest {
             joao.getName(),
             new BigDecimal("50"),
             OrderTypeEnum.BUY,
-            new PriceBelowCondition(new BigDecimal("40")) // nunca vai acontecer
+            new PriceBelowCondition(new BigDecimal("40"))
         );
 
         joao.scheduleConditionalOrder(stock, conditional);
@@ -143,34 +190,34 @@ class ConditionalOrderTest {
         assertEquals(new BigDecimal("58"), stock.getValue());
         assertEquals(0, stock.pendingOrdersCount());
     }
-    
-   @Test
-   void shouldRemoveConditionalOrderAfterExecution() {
-       Stock stock = new Stock("PETR4", new BigDecimal("30"));
 
-       Investor joao = new Investor("João");
+    @Test
+    void shouldRemoveConditionalOrderAfterExecution() {
+        Stock stock = new Stock("PETR4", new BigDecimal("30"));
 
-       ConditionalOrder conditional = ConditionalOrderFactory.create(
-           joao.getName(),
-           new BigDecimal("25"),
-           OrderTypeEnum.BUY,
-           new PriceBelowCondition(new BigDecimal("29"))
-       );
+        Investor joao = new Investor("João");
 
-       joao.scheduleConditionalOrder(stock, conditional);
+        ConditionalOrder conditional = ConditionalOrderFactory.create(
+            joao.getName(),
+            new BigDecimal("25"),
+            OrderTypeEnum.BUY,
+            new PriceBelowCondition(new BigDecimal("29"))
+        );
 
-       stock.placeOrder("Maria", new BigDecimal("25"), OrderTypeEnum.SELL);
+        joao.scheduleConditionalOrder(stock, conditional);
 
-       stock.placeOrder("Carlos", new BigDecimal("28"), OrderTypeEnum.SELL);
-       stock.placeOrder("Ana", new BigDecimal("28"), OrderTypeEnum.BUY);
+        stock.placeOrder("Maria", new BigDecimal("25"), OrderTypeEnum.SELL);
 
-       assertEquals(new BigDecimal("25"), stock.getValue());
+        stock.placeOrder("Carlos", new BigDecimal("28"), OrderTypeEnum.SELL);
+        stock.placeOrder("Ana", new BigDecimal("28"), OrderTypeEnum.BUY);
 
-       stock.placeOrder("Pedro", new BigDecimal("28"), OrderTypeEnum.SELL);
-       stock.placeOrder("Lucas", new BigDecimal("28"), OrderTypeEnum.BUY);
+        assertEquals(new BigDecimal("25"), stock.getValue());
 
-       assertEquals(new BigDecimal("28"), stock.getValue());
-   }
+        stock.placeOrder("Pedro", new BigDecimal("28"), OrderTypeEnum.SELL);
+        stock.placeOrder("Lucas", new BigDecimal("28"), OrderTypeEnum.BUY);
+
+        assertEquals(new BigDecimal("28"), stock.getValue());
+    }
 
     @Test
     void shouldNotifyObserversInChronologicalOrderForTriggerAndConditionalMatch() {
