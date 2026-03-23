@@ -1,11 +1,14 @@
 package br.furb.problema02.service;
 
+import br.furb.problema02.conditionalorder.ConditionalOrder;
 import br.furb.problema02.enums.OrderTypeEnum;
 import br.furb.problema02.model.*;
 import br.furb.problema02.model.stock.*;
 import br.furb.problema02.order.IOrderType;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 public class TradeExecutor {
@@ -30,6 +33,9 @@ public class TradeExecutor {
 
     private void updateStockValue(Stock stock, BigDecimal newValue) {
         stockInfo.setValue(newValue);
+
+        processConditionalOrders(stock);
+
         stockState.notifyObservers(stock);
     }
 
@@ -46,5 +52,28 @@ public class TradeExecutor {
     private TradeResult addPendingOrder(IOrderType newOrder) {
         orders().add(newOrder);
         return TradeResult.pending(newOrder);
+    }
+    
+    private void processConditionalOrders(Stock stock) {
+        List<ConditionalOrder> toExecute = collectConditionalOrdersToExecute();
+        executeConditionalOrders(stock, toExecute);
+    }
+
+    private List<ConditionalOrder> collectConditionalOrdersToExecute() {
+        List<ConditionalOrder> toExecute = new ArrayList<>();
+        for (ConditionalOrder conditional : stockState.getConditionalOrders()) {
+            if (conditional.shouldExecute(stockInfo.getValue())) {
+                toExecute.add(conditional);
+            }
+        }
+        return toExecute;
+    }
+
+    private void executeConditionalOrders(Stock stock, List<ConditionalOrder> toExecute) {
+        for (ConditionalOrder conditional : toExecute) {
+            IOrderType order = conditional.getOrder();
+            processOrder(stock, order, order.getOrderType());
+            stockState.getConditionalOrders().remove(conditional);
+        }
     }
 }

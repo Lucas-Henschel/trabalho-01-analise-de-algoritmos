@@ -1,5 +1,6 @@
 package br.furb.problema02.model;
 
+import br.furb.problema02.conditionalorder.ConditionalOrder;
 import br.furb.problema02.enums.OrderTypeEnum;
 import br.furb.problema02.model.stock.Stock;
 import br.furb.problema02.observer.Observer;
@@ -29,5 +30,9 @@ public class Investor implements Observer {
     public void changedValue(Stock stock) {
         System.out.println("Investidor " + name + " notificado: " +
                 stock.getName() + " mudou para " + stock.getValue());
+    }
+    
+    public void scheduleConditionalOrder(Stock stock, ConditionalOrder order) {
+        stock.scheduleConditionalOrder(order);
     }
 }
