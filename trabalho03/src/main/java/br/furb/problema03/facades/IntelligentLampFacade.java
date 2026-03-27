@@ -4,8 +4,8 @@ import br.furb.analise.algoritmos.LampadaPhellipes;
 import br.furb.analise.algoritmos.LampadaShoyuMi;
 
 public class IntelligentLampFacade {
-    LampadaShoyuMi lampShoyuMi;
-    LampadaPhellipes lampPhellipes;
+    private final LampadaShoyuMi lampShoyuMi;
+    private final LampadaPhellipes lampPhellipes;
 
     public IntelligentLampFacade(LampadaShoyuMi lampadaShoyuMi, LampadaPhellipes lampadaPhellipes) {
         this.lampShoyuMi = lampadaShoyuMi;

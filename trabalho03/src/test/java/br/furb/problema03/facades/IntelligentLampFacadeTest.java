@@ -2,6 +2,7 @@ package br.furb.problema03.facades;
 
 import br.furb.analise.algoritmos.LampadaPhellipes;
 import br.furb.analise.algoritmos.LampadaShoyuMi;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,7 +17,6 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 @ExtendWith(MockitoExtension.class)
 class IntelligentLampFacadeTest {
-
     @Mock
     private LampadaShoyuMi lampadaShoyuMi;
 
@@ -37,6 +37,7 @@ class IntelligentLampFacadeTest {
         InOrder inOrder = org.mockito.Mockito.inOrder(lampadaShoyuMi, lampadaPhellipes);
         inOrder.verify(lampadaShoyuMi).ligar();
         inOrder.verify(lampadaPhellipes).setIntensidade(100);
+
         verifyNoMoreInteractions(lampadaShoyuMi, lampadaPhellipes);
     }
 
@@ -47,6 +48,7 @@ class IntelligentLampFacadeTest {
         InOrder inOrder = org.mockito.Mockito.inOrder(lampadaShoyuMi, lampadaPhellipes);
         inOrder.verify(lampadaShoyuMi).desligar();
         inOrder.verify(lampadaPhellipes).setIntensidade(0);
+
         verifyNoMoreInteractions(lampadaShoyuMi, lampadaPhellipes);
     }
 
@@ -59,7 +61,8 @@ class IntelligentLampFacadeTest {
 
         verify(lampadaShoyuMi).ligar();
         verifyNoMoreInteractions(lampadaShoyuMi, lampadaPhellipes);
-        org.junit.jupiter.api.Assertions.assertSame(exception, thrown);
+
+        Assertions.assertSame(exception, thrown);
     }
 
     @Test
@@ -72,7 +75,8 @@ class IntelligentLampFacadeTest {
         verify(lampadaShoyuMi).ligar();
         verify(lampadaPhellipes).setIntensidade(100);
         verifyNoMoreInteractions(lampadaShoyuMi, lampadaPhellipes);
-        org.junit.jupiter.api.Assertions.assertSame(exception, thrown);
+
+        Assertions.assertSame(exception, thrown);
     }
 
     @Test
@@ -84,7 +88,8 @@ class IntelligentLampFacadeTest {
 
         verify(lampadaShoyuMi).desligar();
         verifyNoMoreInteractions(lampadaShoyuMi, lampadaPhellipes);
-        org.junit.jupiter.api.Assertions.assertSame(exception, thrown);
+
+        Assertions.assertSame(exception, thrown);
     }
 
     @Test
@@ -97,6 +102,7 @@ class IntelligentLampFacadeTest {
         verify(lampadaShoyuMi).desligar();
         verify(lampadaPhellipes).setIntensidade(0);
         verifyNoMoreInteractions(lampadaShoyuMi, lampadaPhellipes);
-        org.junit.jupiter.api.Assertions.assertSame(exception, thrown);
+
+        Assertions.assertSame(exception, thrown);
     }
 }
