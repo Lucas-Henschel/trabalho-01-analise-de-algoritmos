@@ -1,62 +1,33 @@
 package br.furb.problema03.facades;
 
-import br.furb.analise.algoritmos.ArCondicionadoGellaKaza;
-import br.furb.analise.algoritmos.ArCondicionadoVentoBaumn;
+import java.util.List;
+
+import br.furb.problema03.strategies.airConditioner.AirConditionerStrategy;
 
 public class IntelligentAirConditionerFacade {
-    private final ArCondicionadoGellaKaza arCondicionadoGellaKaza;
-    private final ArCondicionadoVentoBaumn arCondicionadoVentoBaumn;
+    private final List<AirConditionerStrategy> airConditioners;
 
-    public IntelligentAirConditionerFacade(ArCondicionadoGellaKaza arCondicionadoGellaKaza, ArCondicionadoVentoBaumn arCondicionadoVentoBaumn) {
-        this.arCondicionadoGellaKaza = arCondicionadoGellaKaza;
-        this.arCondicionadoVentoBaumn = arCondicionadoVentoBaumn;
+    public IntelligentAirConditionerFacade(List<AirConditionerStrategy> airConditioners) {
+        this.airConditioners = List.copyOf(airConditioners);
     }
 
-    public void turnOn() {
-        arCondicionadoGellaKaza.ativar();
-        arCondicionadoVentoBaumn.ligar();
+    public void turnOnAll() {
+        airConditioners.forEach(AirConditionerStrategy::turnOn);
     }
 
-    public void turnOff() {
-        arCondicionadoGellaKaza.desativar();
-        arCondicionadoVentoBaumn.desligar();
+    public void turnOffAll() {
+        airConditioners.forEach(AirConditionerStrategy::turnOff);
     }
 
-    public void increaseTemperature() {
-        arCondicionadoGellaKaza.aumentarTemperatura();
-        increaseTemperatureVentoBaumn();
+    public void increaseTemperatureAll() {
+        airConditioners.forEach(AirConditionerStrategy::increaseTemperature);
     }
 
-    public void decreaseTemperature() {
-        arCondicionadoGellaKaza.diminuirTemperatura();
-        decreaseTemperatureVentoBaumn();
+    public void decreaseTemperatureAll() {
+        airConditioners.forEach(AirConditionerStrategy::decreaseTemperature);
     }
 
-    public void defineTemperature(int temperature) {
-        arCondicionadoVentoBaumn.definirTemperatura(temperature);
-        adjustTemperatureGellaKaza(temperature);
-    }
-
-    private void adjustTemperatureGellaKaza(int temperature) {
-        int currentTemperature = arCondicionadoGellaKaza.getTemperatura();
-        
-        while (temperature > currentTemperature) {
-            arCondicionadoGellaKaza.aumentarTemperatura();
-            currentTemperature = arCondicionadoGellaKaza.getTemperatura();
-        }
-        while (temperature < currentTemperature) {
-            arCondicionadoGellaKaza.diminuirTemperatura();
-            currentTemperature = arCondicionadoGellaKaza.getTemperatura();
-        }
-    }
-
-    private void increaseTemperatureVentoBaumn() {
-        int newTemperature = arCondicionadoVentoBaumn.getTemperatura() + 1;
-        arCondicionadoVentoBaumn.definirTemperatura(newTemperature);
-    }
-
-    private void decreaseTemperatureVentoBaumn() {
-        int newTemperature = arCondicionadoVentoBaumn.getTemperatura() - 1;
-        arCondicionadoVentoBaumn.definirTemperatura(newTemperature);
+    public void defineTemperatureAll(int temperature) {
+        airConditioners.forEach(ac -> ac.defineTemperature(temperature));
     }
 }
