@@ -31,15 +31,17 @@ public class ArCondicionadoGellaKazaStrategy implements AirConditionerStrategy {
 
     @Override
     public void defineTemperature(int temperature) {
-        int currentTemperature = arCondicionadoGellaKaza.getTemperatura();
+        int current = arCondicionadoGellaKaza.getTemperatura();
 
-        while (temperature > currentTemperature) {
-            arCondicionadoGellaKaza.aumentarTemperatura();
-            currentTemperature = arCondicionadoGellaKaza.getTemperatura();
-        }
-        while (temperature < currentTemperature) {
+        while (current != temperature) {
+            if (current < temperature) {
+                arCondicionadoGellaKaza.aumentarTemperatura();
+                current = arCondicionadoGellaKaza.getTemperatura();
+                continue;
+            }
+
             arCondicionadoGellaKaza.diminuirTemperatura();
-            currentTemperature = arCondicionadoGellaKaza.getTemperatura();
+            current = arCondicionadoGellaKaza.getTemperatura();
         }
     }
 }
