@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InOrder;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -34,7 +35,7 @@ class IntelligentLampFacadeTest {
     void turnOnShouldTurnOnShoyuMiAndSetPhellipesToMaxIntensityInOrder() {
         intelligentLampFacade.turnOn();
 
-        InOrder inOrder = org.mockito.Mockito.inOrder(lampadaShoyuMi, lampadaPhellipes);
+        InOrder inOrder = Mockito.inOrder(lampadaShoyuMi, lampadaPhellipes);
         inOrder.verify(lampadaShoyuMi).ligar();
         inOrder.verify(lampadaPhellipes).setIntensidade(100);
 
@@ -45,7 +46,7 @@ class IntelligentLampFacadeTest {
     void turnOffShouldTurnOffShoyuMiAndSetPhellipesToZeroIntensityInOrder() {
         intelligentLampFacade.turnOff();
 
-        InOrder inOrder = org.mockito.Mockito.inOrder(lampadaShoyuMi, lampadaPhellipes);
+        InOrder inOrder = Mockito.inOrder(lampadaShoyuMi, lampadaPhellipes);
         inOrder.verify(lampadaShoyuMi).desligar();
         inOrder.verify(lampadaPhellipes).setIntensidade(0);
 

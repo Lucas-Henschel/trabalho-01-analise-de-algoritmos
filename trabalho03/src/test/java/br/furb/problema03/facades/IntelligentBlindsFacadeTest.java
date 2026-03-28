@@ -1,28 +1,33 @@
-package br.furb.problema03.facades.blinds;
+package br.furb.problema03.facades;
 
 import br.furb.analise.algoritmos.PersianaNatLight;
 import br.furb.analise.algoritmos.PersianaSolarius;
+import br.furb.problema03.strategies.blinds.BlindStrategy;
+import br.furb.problema03.strategies.blinds.PersianaNatLightStrategy;
+import br.furb.problema03.strategies.blinds.PersianaSolariusStrategy;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class IntelligentBlindsFacadeTest {
     private PersianaSolarius sharedSolarius;
     private PersianaNatLight sharedNatLight;
-    private IntelligentBlinds solariusBlinds;
-    private IntelligentBlinds natLightBlinds;
+    private BlindStrategy solariusBlinds;
+    private BlindStrategy natLightBlinds;
 
     @BeforeEach
     void setUp() {
         sharedSolarius = new PersianaSolarius();
         sharedNatLight = new PersianaNatLight();
-        solariusBlinds = new IntelligentBlinds(new PersianaSolariusStrategy(sharedSolarius));
-        natLightBlinds = new IntelligentBlinds(new PersianaNatLightStrategy(sharedNatLight));
+        solariusBlinds = new PersianaSolariusStrategy(sharedSolarius);
+        natLightBlinds = new PersianaNatLightStrategy(sharedNatLight);
     }
 
     @Test
-    void solariusOpenCloseFlow() throws Exception {
+    void solariusOpenCloseFlow() {
         assertTrue(sharedSolarius.estaAberta());
 
         solariusBlinds.close();
@@ -33,9 +38,9 @@ class IntelligentBlindsFacadeTest {
     }
 
     @Test
-    void natLightOpenCloseFlow() throws Exception {
+    void natLightOpenCloseFlow() {
         PersianaNatLight shared = new PersianaNatLight();
-        IntelligentBlinds nat = new IntelligentBlinds(new PersianaNatLightStrategy(shared));
+        BlindStrategy nat = new PersianaNatLightStrategy(shared);
 
         nat.close();
         assertFalse(shared.estaPalhetaErguida());
@@ -47,8 +52,9 @@ class IntelligentBlindsFacadeTest {
     }
 
     @Test
-    void facadeOpenAllAndCloseAll() throws Exception {
-        IntelligentBlindsFacade facade = new IntelligentBlindsFacade(solariusBlinds, natLightBlinds);
+    void facadeOpenAllAndCloseAll() {
+        List<BlindStrategy> blinds = List.of(solariusBlinds, natLightBlinds);
+        IntelligentBlindFacade facade = new IntelligentBlindFacade(blinds);
 
         facade.closeAll();
         facade.openAll();
