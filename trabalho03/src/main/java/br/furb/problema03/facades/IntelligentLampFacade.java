@@ -1,24 +1,21 @@
 package br.furb.problema03.facades;
 
-import br.furb.analise.algoritmos.LampadaPhellipes;
-import br.furb.analise.algoritmos.LampadaShoyuMi;
+import br.furb.problema03.strategies.lamps.LampStrategy;
+
+import java.util.List;
 
 public class IntelligentLampFacade {
-    private final LampadaShoyuMi lampShoyuMi;
-    private final LampadaPhellipes lampPhellipes;
+    private final List<LampStrategy> lamps;
 
-    public IntelligentLampFacade(LampadaShoyuMi lampadaShoyuMi, LampadaPhellipes lampadaPhellipes) {
-        this.lampShoyuMi = lampadaShoyuMi;
-        this.lampPhellipes = lampadaPhellipes;
+    public IntelligentLampFacade(List<LampStrategy> lamps) {
+        this.lamps = List.copyOf(lamps);
     }
 
-    public void turnOn() {
-        lampShoyuMi.ligar();
-        lampPhellipes.setIntensidade(100);
+    public void turnOnAll() {
+        lamps.forEach(LampStrategy::turnOn);
     }
 
-    public void turnOff() {
-        lampShoyuMi.desligar();
-        lampPhellipes.setIntensidade(0);
+    public void turnOffAll() {
+        lamps.forEach(LampStrategy::turnOff);
     }
 }
