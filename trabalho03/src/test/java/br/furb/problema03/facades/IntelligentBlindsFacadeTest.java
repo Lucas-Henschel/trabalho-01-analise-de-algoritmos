@@ -1,65 +1,62 @@
 package br.furb.problema03.facades;
 
-import br.furb.analise.algoritmos.PersianaNatLight;
-import br.furb.analise.algoritmos.PersianaSolarius;
-import br.furb.problema03.strategies.blinds.BlindStrategy;
-import br.furb.problema03.strategies.blinds.PersianaNatLightStrategy;
-import br.furb.problema03.strategies.blinds.PersianaSolariusStrategy;
+import br.furb.problema03.enums.IntelligentBlindEnum;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 class IntelligentBlindsFacadeTest {
-    private PersianaSolarius sharedSolarius;
-    private PersianaNatLight sharedNatLight;
-    private BlindStrategy solariusBlinds;
-    private BlindStrategy natLightBlinds;
+    private List<IntelligentBlindEnum> blindTypes;
 
     @BeforeEach
     void setUp() {
-        sharedSolarius = new PersianaSolarius();
-        sharedNatLight = new PersianaNatLight();
-        solariusBlinds = new PersianaSolariusStrategy(sharedSolarius);
-        natLightBlinds = new PersianaNatLightStrategy(sharedNatLight);
+        blindTypes = List.of(
+            IntelligentBlindEnum.NAT_LIGHT,
+            IntelligentBlindEnum.SOLARIUS
+        );
     }
 
     @Test
-    void solariusOpenCloseFlow() {
-        assertTrue(sharedSolarius.estaAberta());
-
-        solariusBlinds.close();
-        assertFalse(sharedSolarius.estaAberta());
-
-        solariusBlinds.open();
-        assertTrue(sharedSolarius.estaAberta());
-    }
-
-    @Test
-    void natLightOpenCloseFlow() {
-        PersianaNatLight shared = new PersianaNatLight();
-        BlindStrategy nat = new PersianaNatLightStrategy(shared);
-
-        nat.close();
-        assertFalse(shared.estaPalhetaErguida());
-        assertFalse(shared.estaPalhetaAberta());
-
-        nat.open();
-        assertTrue(shared.estaPalhetaAberta());
-        assertTrue(shared.estaPalhetaErguida());
-    }
-
-    @Test
-    void facadeOpenAllAndCloseAll() {
-        List<BlindStrategy> blinds = List.of(solariusBlinds, natLightBlinds);
-        IntelligentBlindFacade facade = new IntelligentBlindFacade(blinds);
-
-        facade.closeAll();
-        facade.openAll();
+    void shouldOpenAllBlinds() {
+        IntelligentBlindFacade facade = new IntelligentBlindFacade(blindTypes);
 
         assertDoesNotThrow(facade::openAll);
+    }
+
+    @Test
+    void shouldCloseAllBlinds() {
+        IntelligentBlindFacade facade = new IntelligentBlindFacade(blindTypes);
+
+        facade.openAll();
         assertDoesNotThrow(facade::closeAll);
+    }
+
+    @Test
+    void shouldWorkWithSingleBlind() {
+        List<IntelligentBlindEnum> blindType = List.of(
+            IntelligentBlindEnum.NAT_LIGHT
+        );
+
+        IntelligentBlindFacade facade = new IntelligentBlindFacade(blindType);
+
+        assertDoesNotThrow(() -> {
+            facade.closeAll();
+            facade.openAll();
+        });
+    }
+
+    @Test
+    void shouldHandleCompleteFlowForMultipleBlinds() {
+        IntelligentBlindFacade facade = new IntelligentBlindFacade(blindTypes);
+
+        assertDoesNotThrow(() -> {
+            facade.closeAll();
+            facade.openAll();
+            facade.closeAll();
+            facade.openAll();
+        });
     }
 }

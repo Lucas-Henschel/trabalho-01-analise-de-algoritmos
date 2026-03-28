@@ -13,7 +13,7 @@ public class LampadaPhellipesStrategy implements LampStrategy {
     @Override
     public void turnOn() {
         try{
-            if(lampadaPhellipes.getIntensidade() != 100) {
+            if (lampadaPhellipes.getIntensidade() != 100) {
                 lampadaPhellipes.setIntensidade(100);
             }
         } catch (Exception e) {

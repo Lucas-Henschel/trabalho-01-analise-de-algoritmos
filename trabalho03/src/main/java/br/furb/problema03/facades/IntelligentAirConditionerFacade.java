@@ -11,8 +11,8 @@ public class IntelligentAirConditionerFacade {
 
     public IntelligentAirConditionerFacade(List<IntelligentAirConditionerEnum> airConditionerTypes) {
         this.airConditioners = airConditionerTypes.stream()
-                .map(AirConditionerFactory::createAirConditionerStrategy)
-                .toList();
+            .map(AirConditionerFactory::createAirConditionerStrategy)
+            .toList();
     }
 
     public void turnOnAll() {

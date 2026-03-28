@@ -23,4 +23,14 @@ public class BlindFactoryTest {
 
         assertInstanceOf(PersianaNatLightStrategy.class, natLightBlind);
     }
+
+    @Test
+    void shouldThrowWhenBlindTypeIsNull() {
+        IllegalArgumentException exception = assertThrows(
+            IllegalArgumentException.class,
+            () -> BlindFactory.createBlindFactory(null)
+        );
+
+        assertEquals("Tipo de persiana inválida não pode ser null", exception.getMessage());
+    }
 }

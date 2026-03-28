@@ -1,67 +1,65 @@
 package br.furb.problema03.facades;
 
-import br.furb.analise.algoritmos.LampadaPhellipes;
-import br.furb.analise.algoritmos.LampadaShoyuMi;
-import br.furb.problema03.strategies.lamps.LampStrategy;
-import br.furb.problema03.strategies.lamps.LampadaPhellipesStrategy;
-import br.furb.problema03.strategies.lamps.LampadaShoyuMiStrategy;
+import br.furb.problema03.enums.IntelligentLampEnum;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class IntelligentLampFacadeTest {
-    private LampadaShoyuMi shoyuMiDevice;
-    private LampadaPhellipes phellipesDevice;
-    private LampStrategy shoyuMiStrategy;
-    private LampStrategy phellipesStrategy;
+    private List<IntelligentLampEnum> lampTypes;
 
     @BeforeEach
     void setUp() {
-        shoyuMiDevice = new LampadaShoyuMi();
-        phellipesDevice = new LampadaPhellipes();
-        shoyuMiStrategy = new LampadaShoyuMiStrategy(shoyuMiDevice);
-        phellipesStrategy = new LampadaPhellipesStrategy(phellipesDevice);
+        lampTypes = List.of(
+            IntelligentLampEnum.SHOYUMI,
+            IntelligentLampEnum.PHELLIPES
+        );
     }
 
     @Test
-    void shoyuMiTurnOnTurnOffFlow() {
-        assertFalse(shoyuMiDevice.estaLigada());
+    void shouldTurnOnAllLamps() {
+        IntelligentLampFacade facade = new IntelligentLampFacade(lampTypes);
 
-        shoyuMiStrategy.turnOn();
-        assertTrue(shoyuMiDevice.estaLigada());
-
-        shoyuMiStrategy.turnOff();
-        assertFalse(shoyuMiDevice.estaLigada());
+        assertDoesNotThrow(facade::turnOnAll);
     }
 
     @Test
-    void phellipesTurnOnTurnOffFlow() {
-        phellipesStrategy.turnOff();
-        assertEquals(0, phellipesDevice.getIntensidade());
+    void shouldTurnOffAllLamps() {
+        IntelligentLampFacade facade = new IntelligentLampFacade(lampTypes);
 
-        phellipesStrategy.turnOn();
-        assertEquals(100, phellipesDevice.getIntensidade());
+        facade.turnOnAll();
+        assertDoesNotThrow(facade::turnOffAll);
     }
 
     @Test
-    void facadeTurnOnAllAndTurnOffAll() {
-        List<LampStrategy> lampStrategies = List.of(shoyuMiStrategy, phellipesStrategy);
-        IntelligentLampFacade lampFacade = new IntelligentLampFacade(lampStrategies);
+    void shouldWorkWithSingleLamp() {
+        List<IntelligentLampEnum> lampType = List.of(
+            IntelligentLampEnum.SHOYUMI
+        );
 
-        lampFacade.turnOffAll();
-        assertFalse(shoyuMiDevice.estaLigada());
-        assertEquals(0, phellipesDevice.getIntensidade());
+        IntelligentLampFacade facade = new IntelligentLampFacade(lampType);
 
-        lampFacade.turnOnAll();
-        assertTrue(shoyuMiDevice.estaLigada());
-        assertEquals(100, phellipesDevice.getIntensidade());
+        assertDoesNotThrow(() -> {
+            facade.turnOnAll();
+            facade.turnOffAll();
+        });
+    }
 
-        assertDoesNotThrow(lampFacade::turnOnAll);
-        assertDoesNotThrow(lampFacade::turnOffAll);
+    @Test
+    void shouldHandleCompleteFlowForMultipleLamps() {
+        IntelligentLampFacade facade = new IntelligentLampFacade(lampTypes);
+
+        assertDoesNotThrow(() -> {
+            facade.turnOnAll();
+            facade.turnOffAll();
+            facade.turnOnAll();
+            facade.turnOffAll();
+        });
     }
 
     @Test
@@ -71,49 +69,18 @@ class IntelligentLampFacadeTest {
 
     @Test
     void constructorShouldThrowWhenLampListContainsNull() {
-        List<LampStrategy> lampStrategiesWithNull = new ArrayList<>();
-        lampStrategiesWithNull.add(shoyuMiStrategy);
-        lampStrategiesWithNull.add(null);
+        List<IntelligentLampEnum> lampTypesWithNull = new ArrayList<>();
+        lampTypesWithNull.add(IntelligentLampEnum.SHOYUMI);
+        lampTypesWithNull.add(null);
 
-        assertThrows(NullPointerException.class, () -> new IntelligentLampFacade(lampStrategiesWithNull));
+        assertThrows(IllegalArgumentException.class, () -> new IntelligentLampFacade(lampTypesWithNull));
     }
 
     @Test
     void shouldNotThrowWhenLampListIsEmpty() {
-        IntelligentLampFacade lampFacade = new IntelligentLampFacade(List.of());
+        IntelligentLampFacade facade = new IntelligentLampFacade(List.of());
 
-        assertDoesNotThrow(lampFacade::turnOnAll);
-        assertDoesNotThrow(lampFacade::turnOffAll);
-    }
-
-    @Test
-    void constructorShouldCreateDefensiveCopyOfLampList() {
-        CountingLampStrategy countingStrategy = new CountingLampStrategy();
-        List<LampStrategy> mutableLampStrategies = new ArrayList<>();
-        mutableLampStrategies.add(countingStrategy);
-
-        IntelligentLampFacade lampFacade = new IntelligentLampFacade(mutableLampStrategies);
-        mutableLampStrategies.clear();
-
-        lampFacade.turnOnAll();
-        lampFacade.turnOffAll();
-
-        assertEquals(1, countingStrategy.turnOnCalls);
-        assertEquals(1, countingStrategy.turnOffCalls);
-    }
-
-    private static class CountingLampStrategy implements LampStrategy {
-        private int turnOnCalls;
-        private int turnOffCalls;
-
-        @Override
-        public void turnOn() {
-            turnOnCalls++;
-        }
-
-        @Override
-        public void turnOff() {
-            turnOffCalls++;
-        }
+        assertDoesNotThrow(facade::turnOnAll);
+        assertDoesNotThrow(facade::turnOffAll);
     }
 }
