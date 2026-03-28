@@ -2,6 +2,7 @@ package br.furb.problema03.facades;
 
 import br.furb.analise.algoritmos.PersianaNatLight;
 import br.furb.analise.algoritmos.PersianaSolarius;
+import br.furb.problema03.enums.IntelligentBlindEnum;
 import br.furb.problema03.strategies.blinds.BlindStrategy;
 import br.furb.problema03.strategies.blinds.PersianaNatLightStrategy;
 import br.furb.problema03.strategies.blinds.PersianaSolariusStrategy;
@@ -16,14 +17,12 @@ class IntelligentBlindsFacadeTest {
     private PersianaSolarius sharedSolarius;
     private PersianaNatLight sharedNatLight;
     private BlindStrategy solariusBlinds;
-    private BlindStrategy natLightBlinds;
 
     @BeforeEach
     void setUp() {
         sharedSolarius = new PersianaSolarius();
         sharedNatLight = new PersianaNatLight();
         solariusBlinds = new PersianaSolariusStrategy(sharedSolarius);
-        natLightBlinds = new PersianaNatLightStrategy(sharedNatLight);
     }
 
     @Test
@@ -53,7 +52,7 @@ class IntelligentBlindsFacadeTest {
 
     @Test
     void facadeOpenAllAndCloseAll() {
-        List<BlindStrategy> blinds = List.of(solariusBlinds, natLightBlinds);
+        List<IntelligentBlindEnum> blinds = List.of(IntelligentBlindEnum.NAT_LIGHT, IntelligentBlindEnum.SOLARIUS);
         IntelligentBlindFacade facade = new IntelligentBlindFacade(blinds);
 
         facade.closeAll();
