@@ -2,108 +2,118 @@ package br.furb.problema03.facades;
 
 import br.furb.analise.algoritmos.LampadaPhellipes;
 import br.furb.analise.algoritmos.LampadaShoyuMi;
-import org.junit.jupiter.api.Assertions;
+import br.furb.problema03.strategies.lamps.LampStrategy;
+import br.furb.problema03.strategies.lamps.LampadaPhellipesStrategy;
+import br.furb.problema03.strategies.lamps.LampadaShoyuMiStrategy;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InOrder;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
+import java.util.ArrayList;
+import java.util.List;
 
-@ExtendWith(MockitoExtension.class)
+import static org.junit.jupiter.api.Assertions.*;
+
 class IntelligentLampFacadeTest {
-    @Mock
-    private LampadaShoyuMi lampadaShoyuMi;
-
-    @Mock
-    private LampadaPhellipes lampadaPhellipes;
-
-    private IntelligentLampFacade intelligentLampFacade;
+    private LampadaShoyuMi shoyuMiDevice;
+    private LampadaPhellipes phellipesDevice;
+    private LampStrategy shoyuMiStrategy;
+    private LampStrategy phellipesStrategy;
 
     @BeforeEach
     void setUp() {
-        intelligentLampFacade = new IntelligentLampFacade(lampadaShoyuMi, lampadaPhellipes);
+        shoyuMiDevice = new LampadaShoyuMi();
+        phellipesDevice = new LampadaPhellipes();
+        shoyuMiStrategy = new LampadaShoyuMiStrategy(shoyuMiDevice);
+        phellipesStrategy = new LampadaPhellipesStrategy(phellipesDevice);
     }
 
     @Test
-    void turnOnShouldTurnOnShoyuMiAndSetPhellipesToMaxIntensityInOrder() {
-        intelligentLampFacade.turnOn();
+    void shoyuMiTurnOnTurnOffFlow() {
+        assertFalse(shoyuMiDevice.estaLigada());
 
-        InOrder inOrder = Mockito.inOrder(lampadaShoyuMi, lampadaPhellipes);
-        inOrder.verify(lampadaShoyuMi).ligar();
-        inOrder.verify(lampadaPhellipes).setIntensidade(100);
+        shoyuMiStrategy.turnOn();
+        assertTrue(shoyuMiDevice.estaLigada());
 
-        verifyNoMoreInteractions(lampadaShoyuMi, lampadaPhellipes);
+        shoyuMiStrategy.turnOff();
+        assertFalse(shoyuMiDevice.estaLigada());
     }
 
     @Test
-    void turnOffShouldTurnOffShoyuMiAndSetPhellipesToZeroIntensityInOrder() {
-        intelligentLampFacade.turnOff();
+    void phellipesTurnOnTurnOffFlow() {
+        phellipesStrategy.turnOff();
+        assertEquals(0, phellipesDevice.getIntensidade());
 
-        InOrder inOrder = Mockito.inOrder(lampadaShoyuMi, lampadaPhellipes);
-        inOrder.verify(lampadaShoyuMi).desligar();
-        inOrder.verify(lampadaPhellipes).setIntensidade(0);
-
-        verifyNoMoreInteractions(lampadaShoyuMi, lampadaPhellipes);
+        phellipesStrategy.turnOn();
+        assertEquals(100, phellipesDevice.getIntensidade());
     }
 
     @Test
-    void turnOnShouldPropagateExceptionWhenShoyuMiFails() {
-        RuntimeException exception = new RuntimeException("Falha ao ligar ShoyuMi");
-        doThrow(exception).when(lampadaShoyuMi).ligar();
+    void facadeTurnOnAllAndTurnOffAll() {
+        List<LampStrategy> lampStrategies = List.of(shoyuMiStrategy, phellipesStrategy);
+        IntelligentLampFacade lampFacade = new IntelligentLampFacade(lampStrategies);
 
-        RuntimeException thrown = assertThrows(RuntimeException.class, () -> intelligentLampFacade.turnOn());
+        lampFacade.turnOffAll();
+        assertFalse(shoyuMiDevice.estaLigada());
+        assertEquals(0, phellipesDevice.getIntensidade());
 
-        verify(lampadaShoyuMi).ligar();
-        verifyNoMoreInteractions(lampadaShoyuMi, lampadaPhellipes);
+        lampFacade.turnOnAll();
+        assertTrue(shoyuMiDevice.estaLigada());
+        assertEquals(100, phellipesDevice.getIntensidade());
 
-        Assertions.assertSame(exception, thrown);
+        assertDoesNotThrow(lampFacade::turnOnAll);
+        assertDoesNotThrow(lampFacade::turnOffAll);
     }
 
     @Test
-    void turnOnShouldPropagateExceptionWhenPhellipesFails() {
-        RuntimeException exception = new RuntimeException("Falha ao ajustar intensidade");
-        doThrow(exception).when(lampadaPhellipes).setIntensidade(100);
-
-        RuntimeException thrown = assertThrows(RuntimeException.class, () -> intelligentLampFacade.turnOn());
-
-        verify(lampadaShoyuMi).ligar();
-        verify(lampadaPhellipes).setIntensidade(100);
-        verifyNoMoreInteractions(lampadaShoyuMi, lampadaPhellipes);
-
-        Assertions.assertSame(exception, thrown);
+    void constructorShouldThrowWhenLampListIsNull() {
+        assertThrows(NullPointerException.class, () -> new IntelligentLampFacade(null));
     }
 
     @Test
-    void turnOffShouldPropagateExceptionWhenShoyuMiFails() {
-        RuntimeException exception = new RuntimeException("Falha ao desligar ShoyuMi");
-        doThrow(exception).when(lampadaShoyuMi).desligar();
+    void constructorShouldThrowWhenLampListContainsNull() {
+        List<LampStrategy> lampStrategiesWithNull = new ArrayList<>();
+        lampStrategiesWithNull.add(shoyuMiStrategy);
+        lampStrategiesWithNull.add(null);
 
-        RuntimeException thrown = assertThrows(RuntimeException.class, () -> intelligentLampFacade.turnOff());
-
-        verify(lampadaShoyuMi).desligar();
-        verifyNoMoreInteractions(lampadaShoyuMi, lampadaPhellipes);
-
-        Assertions.assertSame(exception, thrown);
+        assertThrows(NullPointerException.class, () -> new IntelligentLampFacade(lampStrategiesWithNull));
     }
 
     @Test
-    void turnOffShouldPropagateExceptionWhenPhellipesFails() {
-        RuntimeException exception = new RuntimeException("Falha ao ajustar intensidade");
-        doThrow(exception).when(lampadaPhellipes).setIntensidade(0);
+    void shouldNotThrowWhenLampListIsEmpty() {
+        IntelligentLampFacade lampFacade = new IntelligentLampFacade(List.of());
 
-        RuntimeException thrown = assertThrows(RuntimeException.class, () -> intelligentLampFacade.turnOff());
+        assertDoesNotThrow(lampFacade::turnOnAll);
+        assertDoesNotThrow(lampFacade::turnOffAll);
+    }
 
-        verify(lampadaShoyuMi).desligar();
-        verify(lampadaPhellipes).setIntensidade(0);
-        verifyNoMoreInteractions(lampadaShoyuMi, lampadaPhellipes);
+    @Test
+    void constructorShouldCreateDefensiveCopyOfLampList() {
+        CountingLampStrategy countingStrategy = new CountingLampStrategy();
+        List<LampStrategy> mutableLampStrategies = new ArrayList<>();
+        mutableLampStrategies.add(countingStrategy);
 
-        Assertions.assertSame(exception, thrown);
+        IntelligentLampFacade lampFacade = new IntelligentLampFacade(mutableLampStrategies);
+        mutableLampStrategies.clear();
+
+        lampFacade.turnOnAll();
+        lampFacade.turnOffAll();
+
+        assertEquals(1, countingStrategy.turnOnCalls);
+        assertEquals(1, countingStrategy.turnOffCalls);
+    }
+
+    private static class CountingLampStrategy implements LampStrategy {
+        private int turnOnCalls;
+        private int turnOffCalls;
+
+        @Override
+        public void turnOn() {
+            turnOnCalls++;
+        }
+
+        @Override
+        public void turnOff() {
+            turnOffCalls++;
+        }
     }
 }
