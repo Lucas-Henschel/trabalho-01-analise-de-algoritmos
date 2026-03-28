@@ -29,7 +29,7 @@ public class LampadaPhellipesStrategy implements LampStrategy {
                 lampadaPhellipes.setIntensidade(0);
             }
         } catch (Exception e) {
-            throw new LampOperationException("Não foi possível ligar a lâmpada Phellipes", e);
+            throw new LampOperationException("Não foi possível desligar a lâmpada Phellipes", e);
         }
     }
 }
