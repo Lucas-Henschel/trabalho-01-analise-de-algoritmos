@@ -14,7 +14,7 @@ public class AirConditionerFactory {
         }
 
         switch (type) {
-            case GELLKAZA -> {
+            case GELLAKAZA -> {
                 ArCondicionadoGellaKaza arCondicionadoGellaKaza = new ArCondicionadoGellaKaza();
                 return new ArCondicionadoGellaKazaStrategy(arCondicionadoGellaKaza);
             }

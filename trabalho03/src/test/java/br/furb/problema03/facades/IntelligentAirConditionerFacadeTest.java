@@ -16,7 +16,7 @@ class IntelligentAirConditionerFacadeTest {
     @BeforeEach
     void setUp() {
         airConditionerTypes = List.of(
-                IntelligentAirConditionerEnum.GELLKAZA,
+                IntelligentAirConditionerEnum.GELLAKAZA,
                 IntelligentAirConditionerEnum.VENTOBAUMN
         );
     }
@@ -60,7 +60,7 @@ class IntelligentAirConditionerFacadeTest {
     @Test
     void shouldWorkWithSingleAirConditioner() {
         List<IntelligentAirConditionerEnum> airConditionerType = List.of(
-                IntelligentAirConditionerEnum.GELLKAZA
+                IntelligentAirConditionerEnum.GELLAKAZA
         );
         IntelligentAirConditionerFacade facade = new IntelligentAirConditionerFacade(airConditionerType);
 
