@@ -1,0 +1,25 @@
+# macOS
+.DS_Store
+
+# IDEs
+.idea/
+*.iml
+*.ipr
+*.iws
+.vscode/
+
+# Java / Maven / Gradle
+**/target/
+**/build/
+**/out/
+*.class
+*.log
+
+# Eclipse / STS
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings/
+.springBeans
+.sts4-cache
